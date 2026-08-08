@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة تحويلات صيدليات عابدين</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+        
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-enter { animation: modalEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes modalEnter { from { opacity: 0; transform: scale(0.95) translateY(-20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        /* Status Badge Colors */
+        select.status-select { transition: all 0.2s; appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E"); background-position: left 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-left: 2.5rem; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="h-screen overflow-hidden text-slate-800">
+
+    <div id="login-screen" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+        <!-- Decorative Background -->
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+
+        <div class="glass-panel p-10 rounded-3xl shadow-2xl w-full max-w-md relative z-10 fade-in">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-white text-3xl">
+                    <i class="fa-solid fa-notes-medical"></i>
+                </div>
+                <h1 class="text-3xl font-black text-slate-800">صيدليات عابدين</h1>
+                <p class="text-slate-500 font-bold mt-1">نظام إدارة تحويلات الكول سنتر</p>
+            </div>
+            
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">البريد الإلكتروني</label>
+                    <div class="relative">
+                        <i class="fa fa-user absolute right-3 top-3.5 text-slate-400"></i>
+                        <input type="text" id="login-user" placeholder="أدخل البريد الإلكتروني" class="w-full pr-10 pl-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="fa fa-lock absolute right-3 top-3.5 text-slate-400"></i>
+                        <input type="password" id="login-pass" placeholder="أدخل كلمة المرور" class="w-full pr-10 pl-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" onkeypress="if(event.key === 'Enter') app.login()">
+                    </div>
+                </div>
+            </div>
+            <button onclick="app.login()" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-lg hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                تسجيل الدخول <i class="fa fa-arrow-left mr-2"></i>
+            </button>
+            
+            <div class="mt-8 pt-6 border-t border-slate-200 text-sm text-slate-500 flex justify-between font-bold">
+                <p><i class="fa fa-user-md text-blue-500 ml-1"></i> د. محمود جاد</p>
+                <p><i class="fa fa-headset text-teal-500 ml-1"></i> د. محمد جمال</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-layout" class="hidden h-full flex w-full">
+        
+        <!-- Sidebar -->
+        <aside class="w-72 bg-white border-l border-slate-200 h-full flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-20">
+            <div class="p-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+                    <i class="fa fa-pills"></i>
+                </div>
+                <div>
+                    <h2 class="font-black text-lg text-slate-800">صيدليات عابدين</h2>
+                    <p class="text-xs font-bold text-slate-400">نظام التحويلات v4.0</p>
+                </div>
+            </div>
+            
+            <div class="p-4">
+                <button onclick="app.openAddModal()" class="w-full bg-blue-600 text-white p-3 rounded-xl font-bold hover:bg-blue-700 shadow-md transition-all flex items-center justify-center gap-2">
+                    <i class="fa fa-plus-circle"></i> إضافة تحويل جديد
+                </button>
+            </div>
+
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto p-4 space-y-1">
+                <!-- Navigation items injected here -->
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-3">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center"><i class="fa fa-user"></i></div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-slate-800">مرحباً بك</p>
+                        <p class="text-xs text-slate-500">مدير النظام</p>
+                    </div>
+                </div>
+                <button onclick="app.logout()" class="w-full text-red-600 bg-red-50 hover:bg-red-100 p-2.5 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2">
+                    <i class="fa fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-full bg-slate-50 relative overflow-hidden">
+            <!-- Header -->
+            <header class="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between shadow-sm z-10">
+                <h1 id="page-title" class="text-2xl font-black text-slate-800">لوحة التحكم</h1>
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden md:block">
+                        <i class="fa fa-search absolute right-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="global-search" placeholder="بحث برقم العميل أو الصنف..." onkeyup="app.handleSearch()" class="pl-4 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Container -->
+            <div id="main-content" class="flex-1 overflow-y-auto p-8">
+                <!-- Content injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Transfer Modal -->
+    <div id="transfer-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden hidden" id="transfer-modal-content">
+            <div class="bg-slate-50 border-b px-6 py-4 flex justify-between items-center">
+                <h3 class="font-black text-lg text-slate-800" id="modal-title">إضافة تحويل جديد</h3>
+                <button onclick="app.closeModal('transfer-modal')" class="text-slate-400 hover:text-red-500 transition-colors w-8 h-8 rounded-full bg-white border flex items-center justify-center"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="p-6">
+                <form id="transfer-form" onsubmit="event.preventDefault(); app.saveTransfer();" class="grid grid-cols-2 gap-5">
+                    <input type="hidden" id="form-id">
+                    
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">اسم الصنف <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-medName" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">كود الصنف <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-medCode" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">الطبيب المسئول <span class="text-red-500">*</span></label>
+                        <select id="form-doctor" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                            <!-- Injected dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">قيمة الصنف (ج.م) <span class="text-red-500">*</span></label>
+                        <input type="number" id="form-value" required min="0" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">محول من فرع <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-fromBranch" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">محول إلى فرع <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-toBranch" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">رقم العميل <span class="text-red-500">*</span></label>
+                        <input type="tel" id="form-clientPhone" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">تاريخ التحويل <span class="text-red-500">*</span></label>
+                        <input type="date" id="form-date" required class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">حالة التحويل</label>
+                        <select id="form-status" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50 font-bold">
+                            <option value="قيد التوفير">⏳ قيد التوفير</option>
+                            <option value="لم يتم تاكيد التحويل">❓ لم يتم تاكيد التحويل</option>
+                            <option value="تم التوفير">📦 تم التوفير بالفرع</option>
+                            <option value="تم الاستلام">✅ تم الاستلام (التسليم للعميل)</option>
+                            <option value="تم الالغاء">❌ تم الالغاء</option>
+                        </select>
+                    </div>
+
+                    <div class="col-span-2 bg-slate-50 -mx-6 -mb-6 mt-2 p-4 px-6 border-t flex justify-end gap-3">
+                        <button type="button" onclick="app.closeModal('transfer-modal')" class="px-5 py-2.5 rounded-lg font-bold text-slate-600 hover:bg-slate-200 transition-colors">إلغاء</button>
+                        <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-md">حفظ البيانات</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Reason Modal -->
+    <div id="cancel-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden hidden" id="cancel-modal-content">
+            <div class="p-6 text-center">
+                <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="font-black text-xl text-slate-800 mb-2">سبب الإلغاء</h3>
+                <p class="text-sm text-slate-500 mb-4">برجاء كتابة سبب إلغاء هذا التحويل</p>
+                <input type="hidden" id="cancel-transfer-id">
+                <textarea id="cancel-reason-input" rows="3" class="w-full p-3 border border-red-200 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm resize-none mb-4" placeholder="اكتب السبب هنا..."></textarea>
+                <div class="flex gap-2">
+                    <button onclick="app.closeModal('cancel-modal'); app.revertStatus();" class="flex-1 py-2.5 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200">تراجع</button>
+                    <button onclick="app.confirmCancel()" class="flex-1 py-2.5 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600">تأكيد الإلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[120] flex flex-col gap-2"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_CONFIG = {
+            url: "https://fkrxldzvgvgxrgytxajv.supabase.co",
+            anonKey: "sb_publishable_ZEExatNG8q8lebT0cgXlIA_M1wM0etG"
+        };
+        const supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    </script>
+    <script>
+        const app = {
+            // --- State ---
+            state: {
+                currentView: 1,
+                doctors: JSON.parse(localStorage.getItem('abdeen_doctors')) || ['د. محمود جاد', 'د. محمد جمال'],
+                transfers: JSON.parse(localStorage.getItem('abdeen_transfers')) || [],
+                tempStatusRevertInfo: null // Store original status if cancel is aborted
+            },
+
+            // --- Navigation Definitions ---
+            navItems: [
+                {id: 1, title: 'الرئيسية وملخص الأداء', icon: 'fa-chart-line'},
+                {id: 2, title: 'سجل التحويلات الشامل', icon: 'fa-table-list'},
+                {id: 3, title: 'التحويلات المتأخرة', icon: 'fa-clock text-orange-500'},
+                {id: 4, title: 'قيد التوفير', icon: 'fa-hourglass-half text-blue-500'},
+                {id: 5, title: 'تم التوفير بالفرع', icon: 'fa-box-open text-purple-500'},
+                {id: 6, title: 'تم التسليم للعميل', icon: 'fa-check-circle text-green-500'},
+                {id: 7, title: 'التحويلات الملغاة', icon: 'fa-times-circle text-red-500'},
+                {id: 8, title: 'تقييم أداء الأطباء', icon: 'fa-user-md'},
+                {id: 9, title: 'التقارير الشهرية', icon: 'fa-calendar-alt'},
+                {id: 10, title: 'إعدادات النظام', icon: 'fa-cog'}
+            ],
+
+            // --- Initialization & Auth ---
+            login: () => {
+                const u = document.getElementById('login-user').value;
+                const p = document.getElementById('login-pass').value;
+                
+                if (u === 'drgad' && p === '0211') {
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('app-layout').classList.remove('hidden');
+                    app.init();
+                    app.showToast('تم تسجيل الدخول بنجاح', 'success');
+                } else {
+                    app.showToast('بيانات الدخول غير صحيحة!', 'error');
+                }
+            },
+
+            init: () => {
+                app.buildSidebar();
+                app.renderView(1);
+            },
+
+            buildSidebar: () => {
+                const nav = document.getElementById('sidebar-nav');
+                nav.innerHTML = app.navItems.map(item => `
+                    <button id="nav-btn-${item.id}" onclick="app.renderView(${item.id})" class="w-full text-right p-3 rounded-xl transition-all flex items-center gap-3 font-bold text-sm ${app.state.currentView === item.id ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}">
+                        <div class="w-6 text-center"><i class="fa ${item.icon}"></i></div>
+                        ${item.title}
+                    </button>
+                `).join('');
+            },
+
+            // --- Save & Helpers ---
+            saveData: () => {
+                localStorage.setItem('abdeen_transfers', JSON.stringify(app.state.transfers));
+                localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
+            },
+
+            showToast: (msg, type = 'info') => {
+                const colors = {
+                    success: 'bg-green-100 text-green-800 border-green-200',
+                    error: 'bg-red-100 text-red-800 border-red-200',
+                    info: 'bg-blue-100 text-blue-800 border-blue-200'
+                };
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+                
+                const toast = document.createElement('div');
+                toast.className = `flex items-center gap-3 p-4 rounded-xl border shadow-lg ${colors[type]} fade-in min-w-[250px]`;
+                toast.innerHTML = `<i class="fa ${icons[type]} text-lg"></i> <span class="font-bold text-sm">${msg}</span>`;
+                
+                const container = document.getElementById('toast-container');
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(10px)';
+                    toast.style.transition = 'all 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            },
+
+            // --- Modals Logic ---
+            openModal: (id) => {
+                const modal = document.getElementById(id);
+                const content = document.getElementById(id + '-content');
+                modal.classList.remove('hidden');
+                content.classList.remove('hidden');
+                content.classList.add('modal-enter');
+            },
+
+            closeModal: (id) => {
+                document.getElementById(id).classList.add('hidden');
+                document.getElementById(id + '-content').classList.add('hidden');
+            },
+
+            openAddModal: (id = null) => {
+                // Populate doctors dropdown
+                const docSelect = document.getElementById('form-doctor');
+                docSelect.innerHTML = app.state.doctors.map(d => `<option value="${d}">${d}</option>`).join('');
+                
+                if (id) {
+                    const t = app.state.transfers.find(x => x.id === id);
+                    document.getElementById('modal-title').innerText = 'تعديل بيانات التحويل';
+                    document.getElementById('form-id').value = t.id;
+                    document.getElementById('form-medName').value = t.medName;
+                    document.getElementById('form-medCode').value = t.medCode;
+                    document.getElementById('form-doctor').value = t.doctor;
+                    document.getElementById('form-value').value = t.value;
+                    document.getElementById('form-fromBranch').value = t.fromBranch;
+                    document.getElementById('form-toBranch').value = t.toBranch;
+                    document.getElementById('form-clientPhone').value = t.clientPhone;
+                    document.getElementById('form-date').value = t.date;
+                    document.getElementById('form-status').value = t.status;
+                } else {
+                    document.getElementById('modal-title').innerText = 'إضافة تحويل جديد';
+                    document.getElementById('transfer-form').reset();
+                    document.getElementById('form-id').value = '';
+                    document.getElementById('form-date').value = new Date().toISOString().split('T')[0];
+                }
+                app.openModal('transfer-modal');
+            },
+
+            saveTransfer: () => {
+                const id = document.getElementById('form-id').value;
+                const newStatus = document.getElementById('form-status').value;
+                
+                const transferData = {
+                    id: id || Date.now().toString(),
+                    medName: document.getElementById('form-medName').value,
+                    medCode: document.getElementById('form-medCode').value,
+                    doctor: document.getElementById('form-doctor').value,
+                    value: parseFloat(document.getElementById('form-value').value) || 0,
+                    fromBranch: document.getElementById('form-fromBranch').value,
+                    toBranch: document.getElementById('form-toBranch').value,
+                    clientPhone: document.getElementById('form-clientPhone').value,
+                    date: document.getElementById('form-date').value,
+                    status: newStatus,
+                    receiveDate: (newStatus === 'تم الاستلام') ? new Date().toISOString().split('T')[0] : null,
+                    cancelReason: ''
+                };
+
+                if (newStatus === 'تم الالغاء' && !id) {
+                     app.showToast('لا يمكن إضافة تحويل جديد ملغي مباشرة، أضفه أولاً ثم قم بإلغائه.', 'error');
+                     return;
+                }
+
+                if (id) {
+                    const idx = app.state.transfers.findIndex(x => x.id === id);
+                    const oldStatus = app.state.transfers[idx].status;
+                    
+                    if (newStatus === 'تم الالغاء' && oldStatus !== 'تم الالغاء') {
+                        // User changed status to canceled inside edit form
+                        app.closeModal('transfer-modal');
+                        app.triggerCancelFlow(id, oldStatus, transferData);
+                        return;
+                    } else {
+                        // Preserve cancel reason if it was already canceled
+                        transferData.cancelReason = app.state.transfers[idx].cancelReason;
+                        app.state.transfers[idx] = transferData;
+                    }
+                } else {
+                    app.state.transfers.unshift(transferData);
+                }
+
+                app.saveData();
+                app.closeModal('transfer-modal');
+                app.showToast('تم حفظ بيانات التحويل بنجاح', 'success');
+                app.renderView(app.state.currentView);
+            },
+
+            // --- STREAMING_CHUNK: Status Workflow Engine ---
+            getStatusConfig: (status) => {
+                const configs = {
+                    'قيد التوفير': { color: 'text-blue-700 bg-blue-50 border-blue-200', icon: 'fa-hourglass-half' },
+                    'لم يتم تاكيد التحويل': { color: 'text-slate-700 bg-slate-100 border-slate-300', icon: 'fa-question-circle' },
+                    'تم التوفير': { color: 'text-purple-700 bg-purple-50 border-purple-200', icon: 'fa-box-open' },
+                    'تم الاستلام': { color: 'text-green-700 bg-green-50 border-green-200', icon: 'fa-check-circle' },
+                    'تم الالغاء': { color: 'text-red-700 bg-red-50 border-red-200', icon: 'fa-times-circle' }
+                };
+                return configs[status] || configs['لم يتم تاكيد التحويل'];
+            },
+
+            handleStatusChange: (selectElem, id) => {
+                const newStatus = selectElem.value;
+                const idx = app.state.transfers.findIndex(x => x.id === id);
+                const oldStatus = app.state.transfers[idx].status;
+
+                if (newStatus === 'تم الالغاء') {
+                    app.triggerCancelFlow(id, oldStatus);
+                } else {
+                    app.state.transfers[idx].status = newStatus;
+                    if(newStatus === 'تم الاستلام' && !app.state.transfers[idx].receiveDate) {
+                        app.state.transfers[idx].receiveDate = new Date().toISOString().split('T')[0];
+                    }
+                    app.saveData();
+                    app.showToast('تم تحديث حالة التحويل', 'success');
+                    app.renderView(app.state.currentView); // re-render
+                }
+            },
+
+            triggerCancelFlow: (id, oldStatus, pendingData = null) => {
+                app.state.tempStatusRevertInfo = { id, oldStatus, pendingData };
+                document.getElementById('cancel-transfer-id').value = id;
+                document.getElementById('cancel-reason-input').value = '';
+                app.openModal('cancel-modal');
+            },
+
+            revertStatus: () => {
+                if (app.state.tempStatusRevertInfo) {
+                    const { id, oldStatus } = app.state.tempStatusRevertInfo;
+                    // Revert UI select element if it exists in DOM
+                    const select = document.querySelector(`select[data-id="${id}"]`);
+                    if(select) select.value = oldStatus;
+                    app.state.tempStatusRevertInfo = null;
+                }
+            },
+
+            confirmCancel: () => {
+                const reason = document.getElementById('cancel-reason-input').value.trim();
+                if (!reason) {
+                    app.showToast('يجب كتابة سبب الإلغاء!', 'error');
+                    return;
+                }
+
+                const info = app.state.tempStatusRevertInfo;
+                if (!info) return;
+
+                if (info.pendingData) {
+                    // Update came from edit form
+                    const idx = app.state.transfers.findIndex(x => x.id === info.id);
+                    app.state.transfers[idx] = info.pendingData;
+                    app.state.transfers[idx].status = 'تم الالغاء';
+                    app.state.transfers[idx].cancelReason = reason;
+                } else {
+                    // Update came from table dropdown
+                    const idx = app.state.transfers.findIndex(x => x.id === info.id);
+                    app.state.transfers[idx].status = 'تم الالغاء';
+                    app.state.transfers[idx].cancelReason = reason;
+                }
+
+                app.saveData();
+                app.closeModal('cancel-modal');
+                app.showToast('تم إلغاء التحويل بنجاح', 'success');
+                app.state.tempStatusRevertInfo = null;
+                app.renderView(app.state.currentView);
+            },
+
+            deleteTransfer: (id) => {
+                if(confirm('هل أنت متأكد من حذف هذا التحويل نهائياً؟')) {
+                    app.state.transfers = app.state.transfers.filter(x => x.id !== id);
+                    app.saveData();
+                    app.showToast('تم الحذف بنجاح', 'success');
+                    app.renderView(app.state.currentView);
+                }
+            },
+
+            // --- STREAMING_CHUNK: Rendering Engine & Views ---
+            renderView: (viewId) => {
+                app.state.currentView = viewId;
+                
+                // Update Sidebar UI
+                document.querySelectorAll('#sidebar-nav button').forEach(btn => {
+                    btn.className = "w-full text-right p-3 rounded-xl transition-all flex items-center gap-3 font-bold text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+                });
+                document.getElementById(`nav-btn-${viewId}`).className = "w-full text-right p-3 rounded-xl transition-all flex items-center gap-3 font-bold text-sm bg-blue-50 text-blue-700";
+
+                const titleElem = document.getElementById('page-title');
+                const content = document.getElementById('main-content');
+                const navItem = app.navItems.find(x => x.id === viewId);
+                titleElem.innerHTML = `<i class="fa ${navItem.icon} ml-2 text-blue-600"></i> ${navItem.title}`;
+                content.classList.add('fade-in');
+
+                // Clear search on view change
+                document.getElementById('global-search').value = '';
+
+                setTimeout(() => content.classList.remove('fade-in'), 300);
+
+                let html = '';
+
+                // Calculate Late Items globally for reuse
+                const today = new Date();
+                const getLateItems = () => app.state.transfers.filter(t => {
+                    if (t.status === 'تم الاستلام' || t.status === 'تم الالغاء') return false;
+                    const daysDiff = (today - new Date(t.date)) / (1000 * 60 * 60 * 24);
+                    return daysDiff > 14;
+                });
+
+                if (viewId === 1) {
+                    // Dashboard
+                    const totalValue = app.state.transfers.reduce((sum, t) => sum + (t.status !== 'تم الالغاء' ? t.value : 0), 0);
+                    const lateCount = getLateItems().length;
+                    
+                    html = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa fa-list"></i></div>
+                                <div><p class="text-slate-500 text-sm font-bold">إجمالي التحويلات</p><h3 class="text-2xl font-black text-slate-800">${app.state.transfers.length}</h3></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                                <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa fa-money-bill-wave"></i></div>
+                                <div><p class="text-slate-500 text-sm font-bold">إجمالي القيمة</p><h3 class="text-2xl font-black text-slate-800">${totalValue.toLocaleString()} ج.م</h3></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                                <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa fa-clock"></i></div>
+                                <div><p class="text-slate-500 text-sm font-bold">التحويلات المتأخرة</p><h3 class="text-2xl font-black text-slate-800">${lateCount}</h3></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+                                <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-2xl"><i class="fa fa-users"></i></div>
+                                <div><p class="text-slate-500 text-sm font-bold">الأطباء المسجلين</p><h3 class="text-2xl font-black text-slate-800">${app.state.doctors.length}</h3></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Doctors Summary -->
+                            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                                <h3 class="font-black text-lg text-slate-800 mb-4 border-b pb-3">الأطباء المسئولين عن التحويلات</h3>
+                                <div class="space-y-3">
+                                    ${app.state.doctors.map(doc => {
+                                        const docTransfers = app.state.transfers.filter(t => t.doctor === doc);
+                                        const docValue = docTransfers.reduce((s, t) => s + (t.status !== 'تم الالغاء' ? t.value : 0), 0);
+                                        return `
+                                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
+                                            <div class="flex items-center gap-3"><i class="fa fa-user-md text-slate-400"></i><span class="font-bold text-sm text-slate-700">${doc}</span></div>
+                                            <div class="text-left">
+                                                <span class="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-md ml-2">${docTransfers.length} تحويل</span>
+                                                <span class="text-xs font-bold text-green-600">${docValue.toLocaleString()} ج.م</span>
+                                            </div>
+                                        </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                            <!-- Recent Additions -->
+                            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                                <h3 class="font-black text-lg text-slate-800 mb-4 border-b pb-3">أحدث 5 تحويلات مضافة</h3>
+                                <div class="space-y-3">
+                                    ${app.state.transfers.slice(0,5).map(t => `
+                                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                            <div>
+                                                <p class="font-bold text-sm text-slate-800">${t.medName}</p>
+                                                <p class="text-xs text-slate-500">كود: ${t.medCode} | ${t.date}</p>
+                                            </div>
+                                            <div class="${app.getStatusConfig(t.status).color} text-xs font-bold px-3 py-1.5 rounded-lg border flex items-center gap-1">
+                                                <i class="${app.getStatusConfig(t.status).icon}"></i> ${t.status}
+                                            </div>
+                                        </div>
+                                    `).join('') || '<p class="text-center text-slate-400 text-sm py-4">لا توجد تحويلات بعد</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } 
+                else if (viewId >= 2 && viewId <= 7) {
+                    // Tables (All, Late, By Status)
+                    let filtered = [...app.state.transfers];
+                    
+                    if (viewId === 3) filtered = getLateItems();
+                    else if (viewId === 4) filtered = filtered.filter(t => t.status === 'قيد التوفير');
+                    else if (viewId === 5) filtered = filtered.filter(t => t.status === 'تم التوفير');
+                    else if (viewId === 6) filtered = filtered.filter(t => t.status === 'تم الاستلام');
+                    else if (viewId === 7) filtered = filtered.filter(t => t.status === 'تم الالغاء');
+
+                    html = app.generateTableHTML(filtered, viewId);
+                }
+                else if (viewId === 8) {
+                    // Doctor Stats
+                    const stats = app.state.doctors.map(doc => {
+                        const t = app.state.transfers.filter(x => x.doctor === doc);
+                        const delivered = t.filter(x => x.status === 'تم الاستلام');
+                        const totalVal = t.reduce((sum, x) => sum + (x.status !== 'تم الالغاء' ? x.value : 0), 0);
+                        return { name: doc, delivered: delivered.length, value: totalVal, total: t.length };
+                    });
+
+                    const mostDelivered = [...stats].sort((a,b) => b.delivered - a.delivered)[0];
+                    const highestValue = [...stats].sort((a,b) => b.value - a.value)[0];
+
+                    html = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg flex items-center gap-5 relative overflow-hidden">
+                                <i class="fa fa-trophy absolute left-[-20px] bottom-[-20px] text-8xl opacity-20"></i>
+                                <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl backdrop-blur-sm"><i class="fa fa-handshake"></i></div>
+                                <div>
+                                    <p class="text-green-100 font-bold text-sm mb-1">أكثر دكتور تسليماً للعملاء</p>
+                                    <h3 class="text-2xl font-black">${mostDelivered?.name || '---'}</h3>
+                                    <p class="text-sm font-bold mt-1 bg-black/20 inline-block px-3 py-1 rounded-full">${mostDelivered?.delivered || 0} عملية تسليم</p>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg flex items-center gap-5 relative overflow-hidden">
+                                <i class="fa fa-coins absolute left-[-20px] bottom-[-20px] text-8xl opacity-20"></i>
+                                <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-3xl backdrop-blur-sm"><i class="fa fa-chart-line"></i></div>
+                                <div>
+                                    <p class="text-blue-200 font-bold text-sm mb-1">أعلى قيمة مادية للتحويلات</p>
+                                    <h3 class="text-2xl font-black">${highestValue?.name || '---'}</h3>
+                                    <p class="text-sm font-bold mt-1 bg-black/20 inline-block px-3 py-1 rounded-full">${(highestValue?.value || 0).toLocaleString()} ج.م</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="p-5 border-b bg-slate-50"><h3 class="font-black text-slate-800">تفاصيل أداء الأطباء</h3></div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-right">
+                                    <thead class="bg-slate-100 text-slate-500 font-bold border-b">
+                                        <tr><th class="p-4">الطبيب</th><th class="p-4">إجمالي التحويلات</th><th class="p-4">تم التسليم</th><th class="p-4">نسبة الإنجاز</th><th class="p-4">إجمالي القيمة المادية</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${stats.map(s => {
+                                            const percent = s.total ? Math.round((s.delivered/s.total)*100) : 0;
+                                            return `
+                                            <tr class="hover:bg-slate-50 transition-colors">
+                                                <td class="p-4 font-bold text-slate-800"><i class="fa fa-user-md text-slate-400 ml-2"></i>${s.name}</td>
+                                                <td class="p-4">${s.total}</td>
+                                                <td class="p-4 text-green-600 font-bold">${s.delivered}</td>
+                                                <td class="p-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="w-8">${percent}%</span>
+                                                        <div class="w-full bg-slate-200 rounded-full h-2"><div class="bg-blue-600 h-2 rounded-full" style="width: ${percent}%"></div></div>
+                                                    </div>
+                                                </td>
+                                                <td class="p-4 font-black text-slate-800">${s.value.toLocaleString()} ج.م</td>
+                                            </tr>`;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+                else if (viewId === 9) {
+                    // Monthly Reports
+                    const months = {};
+                    app.state.transfers.forEach(t => {
+                        const d = new Date(t.date);
+                        const monthKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+                        if(!months[monthKey]) months[monthKey] = { count: 0, val: 0, delivered: 0 };
+                        months[monthKey].count++;
+                        if(t.status !== 'تم الالغاء') months[monthKey].val += t.value;
+                        if(t.status === 'تم الاستلام') months[monthKey].delivered++;
+                    });
+
+                    const sortedMonths = Object.keys(months).sort((a,b) => b.localeCompare(a));
+
+                    html = `
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                            <h3 class="font-black text-xl text-slate-800 mb-6">تقرير الأداء الشهري</h3>
+                            <div class="space-y-4">
+                                ${sortedMonths.map(m => `
+                                    <div class="p-5 border border-slate-200 rounded-xl bg-slate-50 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition-shadow">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-14 h-14 bg-white rounded-xl shadow-sm border flex flex-col items-center justify-center text-blue-600">
+                                                <span class="text-xs font-bold text-slate-400">${m.split('-')[0]}</span>
+                                                <span class="text-xl font-black">${m.split('-')[1]}</span>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-black text-slate-800">إحصائيات شهر ${m}</h4>
+                                                <p class="text-sm text-slate-500">تم تسجيل ${months[m].count} تحويل خلال هذا الشهر</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-6 text-center">
+                                            <div><p class="text-xs text-slate-500 font-bold mb-1">تم التسليم</p><p class="text-lg font-black text-green-600">${months[m].delivered}</p></div>
+                                            <div class="w-px bg-slate-200"></div>
+                                            <div><p class="text-xs text-slate-500 font-bold mb-1">القيمة الإجمالية</p><p class="text-lg font-black text-slate-800">${months[m].val.toLocaleString()} ج.م</p></div>
+                                        </div>
+                                    </div>
+                                `).join('') || '<p class="text-center text-slate-500 py-8">لا توجد بيانات شهرية متاحة</p>'}
+                            </div>
+                        </div>
+                    `;
+                }
+                else if (viewId === 10) {
+                    // Settings
+                    html = `
+                        <div class="max-w-2xl mx-auto">
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                                <h3 class="font-black text-xl text-slate-800 mb-2 border-b pb-4"><i class="fa fa-user-md text-blue-500 ml-2"></i> إدارة الأطباء</h3>
+                                <div class="flex gap-2 mb-6 mt-4">
+                                    <input type="text" id="new-doctor-name" placeholder="اسم الطبيب الجديد..." class="flex-1 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button onclick="app.addDoctor()" class="bg-blue-600 text-white px-6 rounded-xl font-bold hover:bg-blue-700 transition">إضافة</button>
+                                </div>
+                                <ul class="space-y-2">
+                                    ${app.state.doctors.map((d, idx) => `
+                                        <li class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                            <span class="font-bold text-slate-700">${d}</span>
+                                            <button onclick="app.removeDoctor(${idx})" class="w-8 h-8 rounded-lg bg-red-100 text-red-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center"><i class="fa fa-trash"></i></button>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 rounded-2xl border border-red-100 p-6 text-center">
+                                <h3 class="font-black text-red-700 mb-2">منطقة الخطر</h3>
+                                <p class="text-sm text-red-600/70 mb-4 font-bold">حذف جميع البيانات والتحويلات من المتصفح نهائياً.</p>
+                                <button onclick="if(confirm('هل أنت متأكد من مسح جميع البيانات؟ لا يمكن التراجع عن هذه الخطوة!')){ localStorage.clear(); location.reload(); }" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700">مسح كافة البيانات</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                content.innerHTML = html;
+            },
+
+            // --- STREAMING_CHUNK: Dynamic Table Generator for Sections 2-7 ---
+            generateTableHTML: (data, viewId) => {
+                if (data.length === 0) {
+                    return `<div class="bg-white rounded-2xl border p-12 text-center text-slate-400">
+                        <i class="fa fa-folder-open text-6xl mb-4 text-slate-200"></i>
+                        <h3 class="text-xl font-bold">لا توجد تحويلات في هذا القسم</h3>
+                    </div>`;
+                }
+
+                const rows = data.map(t => {
+                    const statusConfig = app.getStatusConfig(t.status);
+                    
+                    // Late Badge Logic for active transfers
+                    const today = new Date();
+                    const daysDiff = (today - new Date(t.date)) / (1000 * 60 * 60 * 24);
+                    const isLate = (daysDiff > 14 && t.status !== 'تم الاستلام' && t.status !== 'تم الالغاء');
+                    const lateBadge = isLate ? `<span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold ml-2 animate-pulse absolute -top-2 -right-2">متأخر</span>` : '';
+
+                    return `
+                    <tr class="hover:bg-slate-50 transition-colors group">
+                        <td class="p-4 border-b border-slate-100">
+                            <div class="relative inline-block">
+                                ${lateBadge}
+                                <p class="font-black text-slate-800">${t.medName}</p>
+                                <p class="text-xs text-slate-500 font-bold bg-slate-100 px-2 py-1 rounded inline-block mt-1">كود: ${t.medCode}</p>
+                            </div>
+                        </td>
+                        <td class="p-4 border-b border-slate-100 text-sm whitespace-nowrap">
+                            <div class="flex items-center gap-2"><i class="fa fa-user-md text-slate-300"></i> <span class="font-bold">${t.doctor}</span></div>
+                            <div class="text-xs text-slate-400 mt-1">${t.date}</div>
+                        </td>
+                        <td class="p-4 border-b border-slate-100 text-sm">
+                            <div class="bg-slate-100 p-1.5 rounded text-center mb-1"><span class="text-xs text-slate-400">من:</span> <span class="font-bold">${t.fromBranch}</span></div>
+                            <div class="bg-slate-100 p-1.5 rounded text-center"><span class="text-xs text-slate-400">إلى:</span> <span class="font-bold">${t.toBranch}</span></div>
+                        </td>
+                        <td class="p-4 border-b border-slate-100">
+                            <div class="font-black text-blue-600">${t.value.toLocaleString()} ج</div>
+                            <div class="text-xs text-slate-500 mt-1"><i class="fa fa-phone"></i> ${t.clientPhone}</div>
+                        </td>
+                        <td class="p-4 border-b border-slate-100 w-48">
+                            <select data-id="${t.id}" onchange="app.handleStatusChange(this, '${t.id}')" class="status-select w-full p-2 rounded-lg text-xs font-bold border outline-none cursor-pointer ${statusConfig.color}">
+                                <option value="قيد التوفير" ${t.status === 'قيد التوفير' ? 'selected' : ''}>قيد التوفير</option>
+                                <option value="لم يتم تاكيد التحويل" ${t.status === 'لم يتم تاكيد التحويل' ? 'selected' : ''}>لم يتم تاكيد التحويل</option>
+                                <option value="تم التوفير" ${t.status === 'تم التوفير' ? 'selected' : ''}>تم التوفير بالفرع</option>
+                                <option value="تم الاستلام" ${t.status === 'تم الاستلام' ? 'selected' : ''}>تم الاستلام</option>
+                                <option value="تم الالغاء" ${t.status === 'تم الالغاء' ? 'selected' : ''}>تم الالغاء</option>
+                            </select>
+                            ${t.status === 'تم الالغاء' ? `<p class="text-[10px] text-red-600 mt-1 font-bold leading-tight bg-red-50 p-1 rounded border border-red-100">سبب: ${t.cancelReason}</p>` : ''}
+                            ${t.status === 'تم الاستلام' && t.receiveDate ? `<p class="text-[10px] text-green-600 mt-1 font-bold"><i class="fa fa-calendar-check"></i> وصول: ${t.receiveDate}</p>` : ''}
+                        </td>
+                        <td class="p-4 border-b border-slate-100 text-left w-24">
+                            <div class="flex gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="app.openAddModal('${t.id}')" class="w-8 h-8 rounded bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition flex items-center justify-center"><i class="fa fa-pen text-xs"></i></button>
+                                <button onclick="app.deleteTransfer('${t.id}')" class="w-8 h-8 rounded bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition flex items-center justify-center"><i class="fa fa-trash text-xs"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                return `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right" id="data-table">
+                            <thead class="bg-slate-50 text-slate-500 text-sm border-b font-bold">
+                                <tr>
+                                    <th class="p-4">الصنف / الكود</th>
+                                    <th class="p-4">المسئول / التاريخ</th>
+                                    <th class="p-4">مسار التحويل</th>
+                                    <th class="p-4">القيمة / العميل</th>
+                                    <th class="p-4">الحالة</th>
+                                    <th class="p-4 text-left">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                ${rows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+            },
+
+            // --- Misc Handlers ---
+            addDoctor: () => {
+                const name = document.getElementById('new-doctor-name').value.trim();
+                if (name && !app.state.doctors.includes(name)) {
+                    app.state.doctors.push(name);
+                    app.saveData();
+                    document.getElementById('new-doctor-name').value = '';
+                    app.showToast('تم إضافة الطبيب بنجاح', 'success');
+                    app.renderView(10);
+                }
+            },
+            
+            removeDoctor: (idx) => {
+                if(confirm('تأكيد حذف الطبيب؟')) {
+                    app.state.doctors.splice(idx, 1);
+                    app.saveData();
+                    app.showToast('تم الحذف', 'success');
+                    app.renderView(10);
+                }
+            },
+
+            handleSearch: () => {
+                if (app.state.currentView < 2 || app.state.currentView > 7) return; // Search only in table views
+                
+                const query = document.getElementById('global-search').value.toLowerCase();
+                const rows = document.querySelectorAll('#data-table tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    row.style.display = text.includes(query) ? '' : 'none';
+                });
+            }
+        };
+
+        // Initialize script, check if user was already logged in (optional, currently requires login every refresh)
+        // For production, you could check localStorage for a session token. Here we show login screen first.
+    </script>
+
+    <script>
+        // ===== Cloud sync: Supabase is the source of truth =====
+        (function () {
+            const cloud = {
+                async login(email, password) {
+                    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                },
+                async logout() {
+                    await supabaseClient.auth.signOut();
+                    location.reload();
+                },
+                async load() {
+                    const [tRes, dRes] = await Promise.all([
+                        supabaseClient.from('transfers').select('*'),
+                        supabaseClient.from('doctors').select('*').order('name')
+                    ]);
+                    if (tRes.error) throw tRes.error;
+                    if (dRes.error) throw dRes.error;
+                    app.state.transfers = (tRes.data || []).map(cloud.normalizeTransfer);
+                    app.state.doctors = (dRes.data || []).map(d => d.name).filter(Boolean);
+                    if (!app.state.doctors.length) app.state.doctors = ['د. محمود جاد', 'د. محمد جمال'];
+                    localStorage.setItem('abdeen_transfers', JSON.stringify(app.state.transfers));
+                    localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
+                },
+                normalizeTransfer(row) {
+                    return {
+                        id: String(row.id),
+                        medName: row.medName ?? row.med_name ?? '',
+                        medCode: row.medCode ?? row.med_code ?? '',
+                        doctor: row.doctor ?? '',
+                        value: Number(row.value ?? 0),
+                        fromBranch: row.fromBranch ?? row.from_branch ?? '',
+                        toBranch: row.toBranch ?? row.to_branch ?? '',
+                        clientPhone: row.clientPhone ?? row.client_phone ?? '',
+                        date: row.date ?? '',
+                        status: row.status ?? 'قيد التوفير',
+                        receiveDate: row.receiveDate ?? row.receive_date ?? null,
+                        cancelReason: row.cancelReason ?? row.cancel_reason ?? ''
+                    };
+                },
+                async upsertTransfer(t) {
+                    const payload = { ...t };
+                    const { error } = await supabaseClient.from('transfers').upsert(payload, { onConflict: 'id' });
+                    if (error) throw error;
+                },
+                async deleteTransfer(id) {
+                    const { error } = await supabaseClient.from('transfers').delete().eq('id', id);
+                    if (error) throw error;
+                },
+                async addDoctor(name) {
+                    const { error } = await supabaseClient.from('doctors').insert({ name });
+                    if (error) throw error;
+                },
+                async deleteDoctor(name) {
+                    const { error } = await supabaseClient.from('doctors').delete().eq('name', name);
+                    if (error) throw error;
+                }
+            };
+
+            const originalLogin = app.login;
+            app.login = async () => {
+                const email = document.getElementById('login-user').value.trim();
+                const password = document.getElementById('login-pass').value;
+                if (!email || !password) { app.showToast('أدخل البريد الإلكتروني وكلمة المرور', 'error'); return; }
+                try {
+                    await cloud.login(email, password);
+                    await app.startAfterAuth();
+                } catch (e) {
+                    console.error('Supabase login error:', e);
+                    app.showToast('بيانات الدخول غير صحيحة أو الحساب غير مصرح به', 'error');
+                }
+            };
+
+            app.startAfterAuth = async () => {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-layout').classList.remove('hidden');
+                try {
+                    await cloud.load();
+                    app.buildSidebar();
+                    app.renderView(1);
+                    app.showToast('تم تسجيل الدخول وتحميل البيانات من قاعدة البيانات', 'success');
+                } catch (e) {
+                    console.error('Supabase load error:', e);
+                    document.getElementById('app-layout').classList.add('hidden');
+                    document.getElementById('login-screen').classList.remove('hidden');
+                    app.showToast('تعذر تحميل البيانات من قاعدة البيانات', 'error');
+                }
+            };
+
+            app.logout = () => cloud.logout();
+
+            // Replace local-only save with a cloud upsert for the current transfer set.
+            app.saveData = async () => {
+                localStorage.setItem('abdeen_transfers', JSON.stringify(app.state.transfers));
+                localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
+                try {
+                    for (const t of app.state.transfers) await cloud.upsertTransfer(t);
+                } catch (e) {
+                    console.error('Supabase save error:', e);
+                    app.showToast('تم الحفظ محليًا لكن تعذر مزامنة قاعدة البيانات', 'error');
+                }
+            };
+
+            // Cloud-aware delete
+            app.deleteTransfer = async (id) => {
+                if (!confirm('هل أنت متأكد من حذف هذا التحويل نهائياً؟')) return;
+                try {
+                    await cloud.deleteTransfer(id);
+                    app.state.transfers = app.state.transfers.filter(x => x.id !== id);
+                    localStorage.setItem('abdeen_transfers', JSON.stringify(app.state.transfers));
+                    app.showToast('تم الحذف بنجاح', 'success');
+                    app.renderView(app.state.currentView);
+                } catch (e) {
+                    console.error('Supabase delete error:', e);
+                    app.showToast('تعذر حذف التحويل من قاعدة البيانات', 'error');
+                }
+            };
+
+            // Cloud-aware doctors
+            app.addDoctor = async () => {
+                const name = document.getElementById('new-doctor-name').value.trim();
+                if (!name || app.state.doctors.includes(name)) return;
+                try {
+                    await cloud.addDoctor(name);
+                    app.state.doctors.push(name);
+                    localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
+                    document.getElementById('new-doctor-name').value = '';
+                    app.showToast('تم إضافة الطبيب بنجاح', 'success');
+                    app.renderView(10);
+                } catch (e) {
+                    console.error('Supabase doctor insert error:', e);
+                    app.showToast('تعذر إضافة الطبيب إلى قاعدة البيانات', 'error');
+                }
+            };
+
+            app.removeDoctor = async (idx) => {
+                const name = app.state.doctors[idx];
+                if (!confirm('تأكيد حذف الطبيب؟')) return;
+                try {
+                    await cloud.deleteDoctor(name);
+                    app.state.doctors.splice(idx, 1);
+                    localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
+                    app.showToast('تم الحذف', 'success');
+                    app.renderView(10);
+                } catch (e) {
+                    console.error('Supabase doctor delete error:', e);
+                    app.showToast('تعذر حذف الطبيب من قاعدة البيانات', 'error');
+                }
+            };
+
+            // Restore session on page refresh.
+            (async () => {
+                const { data } = await supabaseClient.auth.getSession();
+                if (data && data.session) {
+                    await app.startAfterAuth();
+                }
+            })();
+        })();
+    </script>
+</body>
+</html>
