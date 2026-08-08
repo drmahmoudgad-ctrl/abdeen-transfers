@@ -233,7 +233,7 @@
     <script>
         const SUPABASE_CONFIG = {
             url: "https://fkrxldzvgvgxrgytxajv.supabase.co",
-            anonKey: "sb_publishable_ZEExatNG8q8lebT0cgXlIA_M1wM0etG"
+            anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrcnhsZHp2Z3ZneHJneXR4YWp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMzA3NDAsImV4cCI6MjEwMTcwNjc0MH0.gwYARCEpGEXf4h74Yeq-UFFl7_ane2OwAPVyITRt5vk"
         };
         const supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
     </script>
@@ -870,7 +870,7 @@
                 },
                 async load() {
                     const [tRes, dRes] = await Promise.all([
-                        supabaseClient.from('transfers').select('*'),
+                        supabaseClient.from('transfers').select('*').order('created_at', { ascending: false }),
                         supabaseClient.from('doctors').select('*').order('name')
                     ]);
                     if (tRes.error) throw tRes.error;
@@ -880,26 +880,42 @@
                     if (!app.state.doctors.length) app.state.doctors = ['د. محمود جاد', 'د. محمد جمال'];
                     localStorage.setItem('abdeen_transfers', JSON.stringify(app.state.transfers));
                     localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
+                    return { transferCount: app.state.transfers.length, doctorCount: app.state.doctors.length };
                 },
                 normalizeTransfer(row) {
                     return {
                         id: String(row.id),
-                        medName: row.medName ?? row.med_name ?? '',
-                        medCode: row.medCode ?? row.med_code ?? '',
+                        medName: row.med_name ?? '',
+                        medCode: row.med_code ?? '',
                         doctor: row.doctor ?? '',
                         value: Number(row.value ?? 0),
-                        fromBranch: row.fromBranch ?? row.from_branch ?? '',
-                        toBranch: row.toBranch ?? row.to_branch ?? '',
-                        clientPhone: row.clientPhone ?? row.client_phone ?? '',
-                        date: row.date ?? '',
+                        fromBranch: row.from_branch ?? '',
+                        toBranch: row.to_branch ?? '',
+                        clientPhone: row.client_phone ?? '',
+                        date: row.transfer_date ?? '',
                         status: row.status ?? 'قيد التوفير',
-                        receiveDate: row.receiveDate ?? row.receive_date ?? null,
-                        cancelReason: row.cancelReason ?? row.cancel_reason ?? ''
+                        receiveDate: row.receive_date ?? null,
+                        cancelReason: row.cancel_reason ?? ''
+                    };
+                },
+                toDbTransfer(t) {
+                    return {
+                        id: String(t.id),
+                        med_name: t.medName ?? '',
+                        med_code: t.medCode ?? '',
+                        doctor: t.doctor ?? '',
+                        value: Number(t.value ?? 0),
+                        from_branch: t.fromBranch ?? '',
+                        to_branch: t.toBranch ?? '',
+                        client_phone: t.clientPhone ?? '',
+                        transfer_date: t.date || new Date().toISOString().slice(0, 10),
+                        status: t.status ?? 'قيد التوفير',
+                        receive_date: t.receiveDate || null,
+                        cancel_reason: t.cancelReason ?? ''
                     };
                 },
                 async upsertTransfer(t) {
-                    const payload = { ...t };
-                    const { error } = await supabaseClient.from('transfers').upsert(payload, { onConflict: 'id' });
+                    const { error } = await supabaseClient.from('transfers').upsert(cloud.toDbTransfer(t), { onConflict: 'id' });
                     if (error) throw error;
                 },
                 async deleteTransfer(id) {
@@ -907,16 +923,27 @@
                     if (error) throw error;
                 },
                 async addDoctor(name) {
-                    const { error } = await supabaseClient.from('doctors').insert({ name });
+                    const { error } = await supabaseClient.from('doctors').upsert({ name }, { onConflict: 'name' });
                     if (error) throw error;
                 },
                 async deleteDoctor(name) {
                     const { error } = await supabaseClient.from('doctors').delete().eq('name', name);
                     if (error) throw error;
+                },
+                async migrateLocalIfCloudEmpty() {
+                    const localTransfers = JSON.parse(localStorage.getItem('abdeen_transfers') || '[]');
+                    const localDoctors = JSON.parse(localStorage.getItem('abdeen_doctors') || '[]');
+                    const { count, error } = await supabaseClient.from('transfers').select('*', { count: 'exact', head: true });
+                    if (error) throw error;
+                    if ((count || 0) === 0 && localTransfers.length) {
+                        for (const t of localTransfers) await cloud.upsertTransfer(t);
+                        for (const name of localDoctors) if (name) await cloud.addDoctor(name);
+                        await cloud.load();
+                        app.showToast('تم نقل البيانات القديمة إلى قاعدة البيانات السحابية', 'success');
+                    }
                 }
             };
 
-            const originalLogin = app.login;
             app.login = async () => {
                 const email = document.getElementById('login-user').value.trim();
                 const password = document.getElementById('login-pass').value;
@@ -934,7 +961,13 @@
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('app-layout').classList.remove('hidden');
                 try {
+                    const localBeforeLoad = JSON.parse(localStorage.getItem('abdeen_transfers') || '[]');
                     await cloud.load();
+                    if (app.state.transfers.length === 0 && localBeforeLoad.length) {
+                        for (const t of localBeforeLoad) await cloud.upsertTransfer(t);
+                        await cloud.load();
+                        app.showToast('تمت مزامنة البيانات المحلية القديمة مع السحابة', 'success');
+                    }
                     app.buildSidebar();
                     app.renderView(1);
                     app.showToast('تم تسجيل الدخول وتحميل البيانات من قاعدة البيانات', 'success');
@@ -942,25 +975,26 @@
                     console.error('Supabase load error:', e);
                     document.getElementById('app-layout').classList.add('hidden');
                     document.getElementById('login-screen').classList.remove('hidden');
-                    app.showToast('تعذر تحميل البيانات من قاعدة البيانات', 'error');
+                    app.showToast('تعذر تحميل البيانات من قاعدة البيانات: ' + (e.message || ''), 'error');
                 }
             };
 
             app.logout = () => cloud.logout();
 
-            // Replace local-only save with a cloud upsert for the current transfer set.
+            // Save only the current transfer set to the cloud using the correct DB column names.
             app.saveData = async () => {
                 localStorage.setItem('abdeen_transfers', JSON.stringify(app.state.transfers));
                 localStorage.setItem('abdeen_doctors', JSON.stringify(app.state.doctors));
                 try {
+                    // The caller has already changed the relevant state; upserting the current set
+                    // keeps the existing app logic intact while fixing the snake_case DB mapping.
                     for (const t of app.state.transfers) await cloud.upsertTransfer(t);
                 } catch (e) {
                     console.error('Supabase save error:', e);
-                    app.showToast('تم الحفظ محليًا لكن تعذر مزامنة قاعدة البيانات', 'error');
+                    app.showToast('تم الحفظ محليًا لكن تعذر مزامنة قاعدة البيانات: ' + (e.message || ''), 'error');
                 }
             };
 
-            // Cloud-aware delete
             app.deleteTransfer = async (id) => {
                 if (!confirm('هل أنت متأكد من حذف هذا التحويل نهائياً؟')) return;
                 try {
@@ -975,7 +1009,6 @@
                 }
             };
 
-            // Cloud-aware doctors
             app.addDoctor = async () => {
                 const name = document.getElementById('new-doctor-name').value.trim();
                 if (!name || app.state.doctors.includes(name)) return;
