@@ -3256,37 +3256,18 @@ const app = {
 
         async ensureSession() {
 
-            let { data, error } =
+            const { data, error } =
                 await supabaseClient.auth.getSession();
 
             if (error) throw error;
 
-            let session = data?.session || null;
+            const session = data?.session || null;
 
+            // Do NOT call refreshSession() manually here.
+            // Supabase's built-in auth client handles token refresh and
+            // repeated manual refresh calls can trigger HTTP 429.
             if (!session?.access_token) {
                 throw new Error('انتهت جلسة الدخول. سجل الدخول مرة أخرى.');
-            }
-
-            // Refresh only when the access token is close to expiry.
-            const expiresAt = Number(session.expires_at || 0) * 1000;
-            const refreshWindow = 60 * 1000;
-
-            if (expiresAt && expiresAt <= Date.now() + refreshWindow) {
-                const refreshed =
-                    await supabaseClient.auth.refreshSession();
-
-                if (refreshed.error) {
-                    throw new Error(
-                        'تعذر تجديد جلسة الدخول: ' +
-                        (refreshed.error.message || '')
-                    );
-                }
-
-                session = refreshed.data?.session || null;
-            }
-
-            if (!session?.access_token) {
-                throw new Error('جلسة الدخول غير صالحة. سجل الدخول مرة أخرى.');
             }
 
             return session;
