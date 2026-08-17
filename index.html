@@ -712,8 +712,21 @@ const SUPABASE_CONFIG = {
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_CONFIG.url,
-        SUPABASE_CONFIG.anonKey
+        SUPABASE_CONFIG.anonKey,
+        {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: false,
+                flowType: 'pkce'
+            }
+        }
     );
+
+// Keep the Supabase session synchronized with the browser.
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    console.log('[Supabase Auth]', event, session ? 'authenticated' : 'no session');
+});
 
 </script>
 
@@ -3241,7 +3254,52 @@ const app = {
         /* LOAD */
         /* ================================================= */
 
+        async ensureSession() {
+
+            let { data, error } =
+                await supabaseClient.auth.getSession();
+
+            if (error) throw error;
+
+            let session = data?.session || null;
+
+            if (!session?.access_token) {
+                throw new Error('انتهت جلسة الدخول. سجل الدخول مرة أخرى.');
+            }
+
+            // Refresh only when the access token is close to expiry.
+            const expiresAt = Number(session.expires_at || 0) * 1000;
+            const refreshWindow = 60 * 1000;
+
+            if (expiresAt && expiresAt <= Date.now() + refreshWindow) {
+                const refreshed =
+                    await supabaseClient.auth.refreshSession();
+
+                if (refreshed.error) {
+                    throw new Error(
+                        'تعذر تجديد جلسة الدخول: ' +
+                        (refreshed.error.message || '')
+                    );
+                }
+
+                session = refreshed.data?.session || null;
+            }
+
+            if (!session?.access_token) {
+                throw new Error('جلسة الدخول غير صالحة. سجل الدخول مرة أخرى.');
+            }
+
+            return session;
+        },
+
+
+        /* ================================================= */
+        /* LOAD */
+        /* ================================================= */
+
         async load() {
+
+            await cloud.ensureSession();
 
             const [
                 tRes,
@@ -3478,6 +3536,8 @@ const app = {
 
         async upsertTransfer(t) {
 
+            await cloud.ensureSession();
+
             const {
                 error
             } =
@@ -3506,6 +3566,8 @@ const app = {
 
         async deleteTransfer(id) {
 
+            await cloud.ensureSession();
+
             const {
                 error
             } =
@@ -3532,6 +3594,8 @@ const app = {
         /* ================================================= */
 
         async addDoctor(name) {
+
+            await cloud.ensureSession();
 
             const {
                 error
@@ -3562,6 +3626,8 @@ const app = {
         /* ================================================= */
 
         async deleteDoctor(name) {
+
+            await cloud.ensureSession();
 
             const {
                 error
@@ -3630,7 +3696,7 @@ const app = {
                     password
                 );
 
-
+                await cloud.ensureSession();
                 await app.startAfterAuth();
 
 
@@ -3800,6 +3866,8 @@ const app = {
 
 
             try {
+
+                await cloud.ensureSession();
 
                 /*
                  * مزامنة التحويلات
@@ -4070,7 +4138,12 @@ const app = {
             data.session
         ) {
 
-            await app.startAfterAuth();
+            try {
+                await cloud.ensureSession();
+                await app.startAfterAuth();
+            } catch (e) {
+                console.error('Supabase session error:', e);
+            }
 
         }
 
