@@ -723,9 +723,34 @@ const supabaseClient =
         }
     );
 
-// Keep the Supabase session synchronized with the browser.
+// Single in-memory session + single startup gate.
+// IMPORTANT: do not start the app from both the login handler and
+// INITIAL_SESSION; doing so creates concurrent database/auth requests and can
+// trigger Supabase refresh-token rate limiting.
+let currentSupabaseSession = null;
+let initialSessionResolve;
+let initialSessionSettled = false;
+const initialSessionReady = new Promise(resolve => {
+    initialSessionResolve = resolve;
+});
+
+let appStartPromise = null;
+let saveInFlight = null;
+
+function markInitialSessionReady(session) {
+    if (initialSessionSettled) return;
+    initialSessionSettled = true;
+    currentSupabaseSession = session || null;
+    initialSessionResolve(currentSupabaseSession);
+}
+
 supabaseClient.auth.onAuthStateChange((event, session) => {
+    currentSupabaseSession = session || null;
     console.log('[Supabase Auth]', event, session ? 'authenticated' : 'no session');
+
+    if (event === 'INITIAL_SESSION') {
+        markInitialSessionReady(session);
+    }
 });
 
 </script>
@@ -3256,21 +3281,14 @@ const app = {
 
         async ensureSession() {
 
-            const { data, error } =
-                await supabaseClient.auth.getSession();
+            const session = await initialSessionReady;
+            const active = currentSupabaseSession || session;
 
-            if (error) throw error;
-
-            const session = data?.session || null;
-
-            // Do NOT call refreshSession() manually here.
-            // Supabase's built-in auth client handles token refresh and
-            // repeated manual refresh calls can trigger HTTP 429.
-            if (!session?.access_token) {
+            if (!active?.access_token) {
                 throw new Error('انتهت جلسة الدخول. سجل الدخول مرة أخرى.');
             }
 
-            return session;
+            return active;
         },
 
 
@@ -3677,7 +3695,9 @@ const app = {
                     password
                 );
 
-                await cloud.ensureSession();
+                // signInWithPassword already establishes the session.
+                // startAfterAuth is single-flight, so INITIAL_SESSION and this
+                // handler cannot start two loads at the same time.
                 await app.startAfterAuth();
 
 
@@ -3705,6 +3725,14 @@ const app = {
 
     app.startAfterAuth =
         async () => {
+
+            if (appStartPromise) {
+                return appStartPromise;
+            }
+
+            appStartPromise = (async () => {
+
+            await cloud.ensureSession();
 
             document
                 .getElementById(
@@ -3810,6 +3838,9 @@ const app = {
 
             }
 
+            })();
+
+            return appStartPromise;
         };
 
 
@@ -3828,6 +3859,10 @@ const app = {
 
     app.saveData =
         async () => {
+
+            if (saveInFlight) return saveInFlight;
+
+            saveInFlight = (async () => {
 
             /* Local backup */
             localStorage.setItem(
@@ -3884,6 +3919,11 @@ const app = {
 
             }
 
+            })().finally(() => {
+                saveInFlight = null;
+            });
+
+            return saveInFlight;
         };
 
 
@@ -4106,26 +4146,14 @@ const app = {
 
     (async () => {
 
-        const {
-            data
-        } =
-            await supabaseClient
-                .auth
-                .getSession();
+        const session = await initialSessionReady;
 
-
-        if (
-            data &&
-            data.session
-        ) {
-
+        if (session?.access_token) {
             try {
-                await cloud.ensureSession();
                 await app.startAfterAuth();
             } catch (e) {
                 console.error('Supabase session error:', e);
             }
-
         }
 
     })();
