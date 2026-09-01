@@ -2165,17 +2165,69 @@ const app = {
 
 
         /* ================================================= */
-        /* DOCTOR STATS */
+        /* DOCTOR STATS - MONTHLY */
         /* ================================================= */
 
         else if (viewId === 8) {
+
+            /*
+             * نفس تفاصيل تقييم الأطباء القديمة بالضبط،
+             * مع إضافة اختيار الشهر والسنة.
+             * عند اختيار "كل الشهور" تظهر كل البيانات كما كانت سابقاً.
+             */
+
+            const availableMonths = [
+                ...new Set(
+                    app.state.transfers
+                        .map(t => {
+                            if (!t.date) return null;
+                            const d = new Date(t.date);
+                            if (Number.isNaN(d.getTime())) return null;
+                            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
+                        })
+                        .filter(Boolean)
+                )
+            ].sort((a,b) => b.localeCompare(a));
+
+            const currentMonthKey =
+                `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2,'0')}`;
+
+            const selectedMonth =
+                window.doctorStatsSelectedMonth === undefined
+                    ? (availableMonths.includes(currentMonthKey)
+                        ? currentMonthKey
+                        : 'all')
+                    : window.doctorStatsSelectedMonth;
+
+            const monthTransfers =
+                selectedMonth === 'all'
+                    ? app.state.transfers
+                    : app.state.transfers.filter(t => {
+                        if (!t.date) return false;
+                        const d = new Date(t.date);
+                        if (Number.isNaN(d.getTime())) return false;
+                        const key =
+                            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
+                        return key === selectedMonth;
+                    });
+
+            const monthNames = [
+                'يناير','فبراير','مارس','أبريل','مايو','يونيو',
+                'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'
+            ];
+
+            const formatMonth = key => {
+                if (key === 'all') return 'كل الشهور';
+                const [year, month] = key.split('-');
+                return `${monthNames[Number(month) - 1]} ${year}`;
+            };
 
             const stats =
                 app.state.doctors.map(
                     doc => {
 
                         const t =
-                            app.state.transfers.filter(
+                            monthTransfers.filter(
                                 x =>
                                     x.doctor === doc
                             );
@@ -2231,7 +2283,6 @@ const app = {
                     }
                 );
 
-
             const mostDelivered =
                 [...stats]
                     .sort(
@@ -2239,7 +2290,6 @@ const app = {
                             b.delivered -
                             a.delivered
                     )[0];
-
 
             const highestValue =
                 [...stats]
@@ -2249,8 +2299,50 @@ const app = {
                             a.value
                     )[0];
 
-
             html = `
+
+                <!-- MONTH FILTER -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                        <div>
+                            <h3 class="font-black text-lg text-slate-800">
+                                تقييم أداء الأطباء حسب الشهر
+                            </h3>
+                            <p class="text-sm text-slate-500 mt-1 font-bold">
+                                عرض نفس تفاصيل الأداء القديمة مع إمكانية تحديد الشهر
+                            </p>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <label class="text-sm font-bold text-slate-600 whitespace-nowrap">
+                                الشهر:
+                            </label>
+
+                            <select
+                                id="doctor-month-filter"
+                                onchange="window.doctorStatsSelectedMonth = this.value; app.renderView(8);"
+                                class="min-w-[190px] p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <option value="all" ${selectedMonth === 'all' ? 'selected' : ''}>
+                                    كل الشهور
+                                </option>
+
+                                ${
+                                    availableMonths.map(m => `
+                                        <option
+                                            value="${m}"
+                                            ${selectedMonth === m ? 'selected' : ''}
+                                        >
+                                            ${formatMonth(m)}
+                                        </option>
+                                    `).join('')
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
@@ -2314,11 +2406,15 @@ const app = {
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
 
-                    <div class="p-5 border-b bg-slate-50">
+                    <div class="p-5 border-b bg-slate-50 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
 
                         <h3 class="font-black text-slate-800">
                             تفاصيل أداء الأطباء
                         </h3>
+
+                        <span class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg">
+                            ${formatMonth(selectedMonth)}
+                        </span>
 
                     </div>
 
@@ -2357,6 +2453,7 @@ const app = {
                                 </tr>
 
                             </thead>
+
 
                             <tbody class="divide-y divide-slate-100">
 
