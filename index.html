@@ -2576,7 +2576,11 @@ const app = {
 
                             delivered: 0,
 
-                            deliveredValue: 0
+                            deliveredValue: 0,
+
+                            cancelled: 0,
+
+                            cancelledValue: 0
 
                         };
 
@@ -2592,9 +2596,16 @@ const app = {
 
 
                     if (
-                        t.status !==
+                        t.status ===
                         'تم الالغاء'
                     ) {
+
+                        months[monthKey].cancelled++;
+
+                        months[monthKey].cancelledValue +=
+                            Number(t.value || 0);
+
+                    } else {
 
                         months[monthKey].val +=
                             Number(
@@ -2620,6 +2631,32 @@ const app = {
 
                 }
             );
+
+
+            // إظهار تقرير أكتوبر 2026 حتى لو لم توجد تحويلات فيه بعد
+            const october2026Key = '2026-10';
+
+            if (!months[october2026Key]) {
+
+                months[october2026Key] = {
+
+                    count: 0,
+
+                    quantity: 0,
+
+                    val: 0,
+
+                    delivered: 0,
+
+                    deliveredValue: 0,
+
+                    cancelled: 0,
+
+                    cancelledValue: 0
+
+                };
+
+            }
 
 
             const sortedMonths =
@@ -2700,6 +2737,35 @@ const app = {
 
                                                 <p class="text-lg font-black text-emerald-600">
                                                     ${months[m].deliveredValue.toLocaleString()}
+                                                    ج.م
+                                                </p>
+
+                                            </div>
+
+                                            <div class="w-px bg-slate-200"></div>
+
+                                            <div>
+
+                                                <p class="text-xs text-slate-500 font-bold mb-1">
+                                                    عدد التحويلات الملغاة
+                                                </p>
+
+                                                <p class="text-lg font-black text-red-600">
+                                                    ${months[m].cancelled}
+                                                </p>
+
+                                            </div>
+
+                                            <div class="w-px bg-slate-200"></div>
+
+                                            <div>
+
+                                                <p class="text-xs text-slate-500 font-bold mb-1">
+                                                    قيمة التحويلات الملغاة
+                                                </p>
+
+                                                <p class="text-lg font-black text-red-600">
+                                                    ${months[m].cancelledValue.toLocaleString()}
                                                     ج.م
                                                 </p>
 
