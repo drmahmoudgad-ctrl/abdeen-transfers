@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="نظام إدارة التحويلات - صيدليات عابدين">
-    <meta name="theme-color" content="#006e4d">
-    <meta name="color-scheme" content="light">
 
     <title>صيدليات عابدين - نظام التحويلات</title>
 
@@ -691,221 +688,20 @@ body{background:var(--shot-bg)!important;}
 }
 
 
-/* =========================================================
-   PUBLISH READY — PREMIUM DASHBOARD PANELS
-   Visual-only layer: preserves existing data and JS logic.
-   ========================================================= */
-:root{--ab-green:#006e4d;--ab-green-2:#079b68;--ab-ink:#173f4b;--ab-muted:#70858e;--ab-line:#e5edf0;--ab-bg:#f4f8f9;--ab-card:#ffffff;}
-html{scroll-behavior:smooth;}
-body{min-width:320px;overflow-x:hidden;background:var(--ab-bg)!important;}
-button,input,select,textarea{font-family:"Tajawal","Cairo",Arial,sans-serif;}
-
-/* Main dashboard canvas */
-.ab-dashboard-v2{width:100%;max-width:100%;padding-bottom:18px;}
-.ab-content{background:linear-gradient(180deg,#f7fafb 0%,#f2f7f8 100%);}
-
-/* Hero */
-.ab-hero-v5{min-height:168px!important;height:168px!important;border-radius:20px!important;border:1px solid #dcebe5!important;box-shadow:0 12px 30px rgba(0,91,66,.08)!important;padding:20px 26px!important;}
-.ab-hero-copy-v5 h2{font-size:29px!important;line-height:1.45!important;letter-spacing:-.2px;}
-.ab-hero-copy-v5 p{font-size:13px!important;}
-.ab-hero-kicker{font-size:11px!important;font-weight:900!important;letter-spacing:.1px;}
-.ab-hero-brand-v5{width:220px!important;height:140px!important;}
-.ab-hero-brand-v5 img{filter:drop-shadow(0 7px 10px rgba(0,80,60,.10));}
-
-/* KPI cards — each metric is an independent visual panel */
-.ab-stat-grid-v2{display:grid!important;grid-template-columns:repeat(5,minmax(150px,1fr))!important;gap:14px!important;margin-top:16px!important;}
-.ab-stat-grid-v2 .ab-v2-stat{min-height:132px!important;height:auto!important;border:1px solid var(--ab-line)!important;border-top-width:4px!important;border-radius:16px!important;background:var(--ab-card)!important;box-shadow:0 8px 22px rgba(29,76,91,.055)!important;padding:16px!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;}
-.ab-stat-grid-v2 .ab-v2-stat:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(29,76,91,.10)!important;border-color:#d7e7e9!important;}
-.ab-stat-grid-v2 .ico{width:54px!important;height:54px!important;border-radius:15px!important;box-shadow:none!important;font-size:20px!important;}
-.ab-v2-stat-body p{font-size:12px!important;color:#526d77!important;margin-bottom:7px!important;}
-.ab-v2-stat-body h3{font-size:28px!important;}
-.ab-v2-trend{position:static!important;margin-top:8px;font-size:10px!important;color:#7a8d95!important;}
-
-/* Independent dashboard lists / panels */
-.ab-v2-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;margin-top:14px!important;align-items:stretch;}
-.ab-v2-panel,.ab-v2-today,.ab-v2-chart-card{border:1px solid var(--ab-line)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 8px 22px rgba(29,76,91,.05)!important;padding:15px!important;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease!important;}
-.ab-v2-panel:hover,.ab-v2-today:hover,.ab-v2-chart-card:hover{transform:translateY(-2px);box-shadow:0 13px 28px rgba(29,76,91,.08)!important;}
-.ab-v2-panel-head{min-height:42px!important;margin-bottom:9px!important;padding-bottom:9px;border-bottom:1px solid #eef3f5;}
-.ab-v2-panel-head h3{font-size:14px!important;color:var(--ab-ink)!important;}
-.ab-v2-panel-head button{font-size:10px!important;padding:7px 10px!important;border-radius:10px!important;white-space:nowrap;}
-.ab-rank-row{padding:9px 2px!important;border-top:1px solid #f0f4f5!important;}
-.ab-rank-no{width:26px!important;height:26px!important;font-size:10px!important;}
-.ab-rank-name{font-size:11px!important;}
-.ab-rank-track{height:7px!important;}
-.ab-rank-row strong{font-size:11px!important;}
-
-/* Today summary as a standalone list */
-.ab-today-grid{gap:10px!important;}
-.ab-today-card{min-height:84px!important;border:1px solid rgba(0,0,0,.035);}
-
-/* Latest transfers = its own premium panel */
-.ab-v2-lower-grid{display:grid!important;grid-template-columns:minmax(0,2fr) minmax(300px,1fr)!important;gap:14px!important;margin-top:14px!important;align-items:stretch;}
-.ab-v2-recent{margin-top:0!important;border:1px solid var(--ab-line)!important;border-radius:16px!important;box-shadow:0 8px 22px rgba(29,76,91,.05)!important;}
-.ab-v2-chart-card{margin-top:0!important;}
-.ab-recent-head{height:58px!important;padding:0 16px!important;background:linear-gradient(180deg,#fff,#fbfdfd);}
-.ab-recent-head h3{font-size:15px!important;color:var(--ab-ink)!important;}
-.ab-recent-head button{padding:8px 12px!important;border-radius:10px!important;}
-.ab-shot-table{font-size:11px!important;}
-.ab-shot-table th{padding:11px 9px!important;background:#f2f7f8!important;color:#385965!important;}
-.ab-shot-table td{padding:10px 9px!important;}
-.ab-shot-table tbody tr:last-child td{border-bottom:0!important;}
-.ab-shot-table tbody tr{transition:background .15s ease;}
-.ab-row-actions button{width:28px!important;height:28px!important;border-radius:8px!important;}
-
-/* Quick-actions column */
-.ab-right-panel{background:#f3f8f9!important;border-left:1px solid #dde9ed!important;padding:0 14px 20px!important;}
-.ab-quick-title{border-radius:0 0 15px 15px!important;height:62px!important;}
-.ab-quick-btn{min-height:52px!important;border-radius:14px!important;margin-bottom:11px!important;box-shadow:0 7px 16px rgba(30,80,100,.08)!important;}
-.ab-date-card,.ab-db-card{border-radius:15px!important;box-shadow:0 7px 18px rgba(30,80,100,.05)!important;}
-
-/* Sidebar publish polish */
-.ab-sidebar{box-shadow:5px 0 28px rgba(0,55,40,.18)!important;}
-.ab-sidebar-nav .ab-side-item{min-height:51px!important;border-radius:13px!important;}
-.ab-sidebar-nav .ab-side-item.ab-active{box-shadow:0 9px 22px rgba(0,0,0,.20)!important;}
-
-/* Better focus / accessibility */
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(22,133,229,.28)!important;outline-offset:2px!important;}
-
-/* Smaller desktop widths */
-@media(max-width:1250px){
-  .ab-stat-grid-v2{grid-template-columns:repeat(3,minmax(150px,1fr))!important;}
-  .ab-v2-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
-  .ab-v2-today{grid-column:1/-1;}
-}
-@media(max-width:980px){
-  .ab-right-panel{display:none!important;}
-  .ab-main{width:100%!important;}
-  .ab-stat-grid-v2{grid-template-columns:repeat(2,minmax(150px,1fr))!important;}
-  .ab-v2-grid{grid-template-columns:1fr!important;}
-  .ab-v2-lower-grid{grid-template-columns:1fr!important;}
-  .ab-v2-today{grid-column:auto;}
-}
-@media(max-width:700px){
-  .ab-content{padding:12px!important;}
-  .ab-hero-v5{min-height:145px!important;height:auto!important;padding:18px!important;}
-  .ab-hero-copy-v5 h2{font-size:21px!important;}
-  .ab-hero-brand-v5{width:120px!important;opacity:.92;}
-  .ab-stat-grid-v2{grid-template-columns:1fr!important;gap:10px!important;}
-  .ab-stat-grid-v2 .ab-v2-stat{min-height:112px!important;}
-  .ab-today-grid{grid-template-columns:1fr 1fr!important;}
-}
-@media(max-width:480px){
-  .ab-hero-brand-v5{display:none!important;}
-  .ab-hero-copy-v5 h2{font-size:19px!important;}
-  .ab-today-grid{grid-template-columns:1fr!important;}
-  .ab-v2-panel,.ab-v2-today,.ab-v2-chart-card{padding:12px!important;}
-}
-
-/* Print-friendly publication output */
-@media print{
-  .ab-sidebar,.ab-right-panel,.ab-topbar,.ab-quick-title{display:none!important;}
-  .ab-main{width:100%!important;}
-  .ab-content{overflow:visible!important;background:#fff!important;padding:0!important;}
-  .ab-v2-stat,.ab-v2-panel,.ab-v2-today,.ab-v2-chart-card,.ab-v2-recent{box-shadow:none!important;break-inside:avoid;}
-}
-
-
-/* ===== SIDEBAR MENU - PREMIUM REDESIGN ===== */
-.ab-sidebar{
-  width:252px!important;min-width:252px!important;
-  background:linear-gradient(180deg,#075c47 0%,#04503d 48%,#033f31 100%)!important;
-  box-shadow:8px 0 30px rgba(0,55,42,.18)!important;
-  border-left:1px solid rgba(255,255,255,.08)!important;
-}
-.ab-sidebar:after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 22%,transparent 78%,rgba(0,0,0,.08));
-}
-.ab-sidebar-brand{
-  height:116px!important;
-  background:linear-gradient(180deg,#fff 0%,#fbfdfc 100%)!important;
-  border-bottom:1px solid #e8efec!important;
-  box-shadow:0 4px 16px rgba(0,0,0,.08)!important;
-}
-.ab-sidebar-logo{width:194px!important;height:100px!important;object-fit:contain;}
-.ab-sidebar-nav{
-  padding:16px 12px 18px!important;
-  gap:8px!important;
-  overflow-y:auto;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(255,255,255,.18) transparent;
-}
-.ab-sidebar-nav::-webkit-scrollbar{width:4px}.ab-sidebar-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:20px}
-.ab-sidebar-nav .ab-side-item{
-  position:relative!important;
-  height:52px!important;min-height:52px!important;
-  margin:0!important;
-  padding:0 11px 0 10px!important;
-  border:1px solid rgba(255,255,255,.075)!important;
-  border-radius:15px!important;
-  background:rgba(255,255,255,.055)!important;
-  color:#e9f8f3!important;
-  display:flex!important;align-items:center!important;
-  gap:12px!important;
-  font-family:"Tajawal","Cairo",Arial,sans-serif!important;
-  font-size:14px!important;font-weight:800!important;
-  letter-spacing:0!important;
-  text-shadow:none!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 2px 8px rgba(0,0,0,.04)!important;
-  transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease!important;
-}
-.ab-sidebar-nav .ab-side-item:before{
-  content:"";position:absolute;right:-1px;top:10px;bottom:10px;width:3px;
-  border-radius:4px;background:transparent;transition:.2s ease;
-}
-.ab-sidebar-nav .ab-side-item:hover{
-  transform:translateX(-3px)!important;
-  background:rgba(255,255,255,.115)!important;
-  border-color:rgba(255,255,255,.14)!important;
-  box-shadow:0 7px 18px rgba(0,0,0,.10)!important;
-}
-.ab-sidebar-nav .ab-side-item.ab-active{
-  background:linear-gradient(135deg,#ffffff 0%,#f1fbf7 100%)!important;
-  color:#00734f!important;
-  border-color:rgba(255,255,255,.92)!important;
-  box-shadow:0 9px 24px rgba(0,0,0,.16)!important;
-  transform:translateX(-1px)!important;
-}
-.ab-sidebar-nav .ab-side-item.ab-active:before{background:#0aa76f}
-.ab-sidebar-nav .ab-side-item span:last-child{
-  flex:1!important;color:inherit!important;font-weight:900!important;
-  text-align:right!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;
-}
-.ab-sidebar-nav .ab-side-icon{
-  width:35px!important;height:35px!important;min-width:35px!important;
-  border-radius:11px!important;
-  display:inline-flex!important;align-items:center!important;justify-content:center!important;
-  background:rgba(255,255,255,.115)!important;
-  color:#dff8ee!important;
-  font-size:15px!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
-  transition:.2s ease!important;
-}
-.ab-sidebar-nav .ab-side-item:hover .ab-side-icon{background:rgba(255,255,255,.18)!important;transform:scale(1.04)}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon{
-  background:#e2f6ed!important;color:#00845a!important;box-shadow:none!important;
-}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-orange{color:#f08b12!important;background:#fff0d8!important}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-green{color:#008f63!important;background:#e0f7ed!important}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-red{color:#df4e4e!important;background:#ffe7e7!important}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-yellow{color:#b78600!important;background:#fff4ce!important}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-cyan{color:#008f98!important;background:#def7f7!important}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-gray{color:#5b6870!important;background:#edf1f3!important}
-.ab-sidebar-nav .ab-side-item.ab-active .ab-side-icon.ab-purple{color:#7c4cc4!important;background:#f0e7ff!important}
-.ab-sidebar-nav .ab-side-item i{font-size:15px!important;line-height:1!important}
-.ab-sidebar-nav .ab-side-item.ab-logout{
-  margin-top:8px!important;
-  background:rgba(255,255,255,.035)!important;
-  border-color:rgba(255,255,255,.06)!important;
-}
-.ab-sidebar-nav .ab-side-item.ab-logout:hover{background:rgba(255,91,91,.12)!important;border-color:rgba(255,150,150,.18)!important}
-.ab-sidebar-bottom{padding:14px 16px 20px!important;font-size:11px!important;color:#bfe7da!important}
-.ab-heart-line{border-top-color:rgba(255,255,255,.10)!important;padding-top:12px!important}
-.ab-heart-line i{font-size:19px!important;color:#63d99a!important}
-@media(max-width:900px){
-  .ab-sidebar{width:230px!important;min-width:230px!important}
-  .ab-sidebar-nav .ab-side-item{font-size:13px!important}
-}
+/* ===== FINAL PUBLISH LAYOUT FIX ===== */
+html,body{width:100%;height:100%;margin:0;}
+body{min-width:1100px;}
+#app-layout.ab-shell{display:flex!important;width:100%!important;height:100vh!important;min-height:680px!important;direction:ltr!important;overflow:hidden!important;}
+#app-layout .ab-sidebar{flex:0 0 220px!important;width:220px!important;min-width:220px!important;height:100vh!important;box-sizing:border-box!important;}
+#app-layout .ab-main{flex:1 1 auto!important;min-width:0!important;height:100vh!important;}
+#app-layout .ab-right-panel{flex:0 0 266px!important;width:266px!important;min-width:266px!important;box-sizing:border-box!important;}
+#app-layout .ab-side-item{box-sizing:border-box!important;white-space:nowrap!important;}
+#app-layout .ab-side-item.ab-active{background:linear-gradient(135deg,#ffffff,#edf9f4)!important;color:#007451!important;box-shadow:0 8px 18px rgba(0,0,0,.12)!important;}
+#app-layout .ab-side-item.ab-active .ab-side-icon{background:#dff5eb!important;color:#008b63!important;}
+#app-layout .ab-content{min-height:0!important;}
+.ab-right-panel{scrollbar-width:thin;}
+@media(max-width:1200px){body{min-width:0;}#app-layout .ab-sidebar{flex-basis:205px!important;width:205px!important;min-width:205px!important;}#app-layout .ab-right-panel{flex-basis:245px!important;width:245px!important;min-width:245px!important;}}
+@media(max-width:850px){#app-layout.ab-shell{display:block!important;overflow:auto!important;}#app-layout .ab-sidebar{position:fixed!important;left:-230px!important;top:0!important;z-index:100!important;width:220px!important;min-width:220px!important;transition:left .25s ease!important;}#app-layout .ab-sidebar.ab-mobile-open{left:0!important;}#app-layout .ab-main{width:100%!important;height:100vh!important;}#app-layout .ab-right-panel{display:none!important;}}
 
 </style>
 </head>
@@ -1001,10 +797,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         <span class="ab-side-icon ab-green"><i class="fa fa-magnifying-glass"></i></span><span>جميع التحويلات</span>
     </button>
     <button id="nav-btn-4" onclick="app.renderView(4)" class="ab-side-item">
-        <span class="ab-side-icon ab-orange"><i class="fa fa-box-open"></i></span><span>تحويلات قيد التوفير</span>
+        <span class="ab-side-icon ab-orange"><i class="fa fa-hourglass-half"></i></span><span>قيد التوفير</span>
+    </button>
+    <button id="nav-btn-5" onclick="app.renderView(5)" class="ab-side-item">
+        <span class="ab-side-icon ab-purple"><i class="fa fa-box-open"></i></span><span>تم التوفير</span>
     </button>
     <button id="nav-btn-6" onclick="app.renderView(6)" class="ab-side-item">
-        <span class="ab-side-icon ab-green"><i class="fa fa-circle-check"></i></span><span>تحويلات تم تسليمها</span>
+        <span class="ab-side-icon ab-green"><i class="fa fa-circle-check"></i></span><span>تم التسليم</span>
     </button>
     <button id="nav-btn-7" onclick="app.renderView(7)" class="ab-side-item">
         <span class="ab-side-icon ab-red"><i class="fa fa-circle-xmark"></i></span><span>التحويلات الملغاة</span>
@@ -1060,10 +859,30 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <!-- RIGHT QUICK ACTIONS -->
     <aside class="ab-right-panel">
         <div class="ab-quick-title"><span>إجراءات سريعة</span><i class="fa fa-bolt"></i></div>
-        <button class="ab-quick-btn ab-q-green" onclick="app.renderView(4)"><span><i class="fa fa-plus"></i></span>إضافة تحويل جديد<i class="fa fa-chevron-left"></i></button>
-        <button onclick="app.renderView(2)" class="ab-quick-btn ab-q-blue"><span><i class="fa fa-magnifying-glass"></i></span>بحث عن تحويل<i class="fa fa-chevron-left"></i></button>
-        <button onclick="app.renderView(8)" class="ab-quick-btn ab-q-orange"><span><i class="fa fa-user-doctor"></i></span>تقرير أداة الصيادلة<i class="fa fa-chevron-left"></i></button>
-        <button onclick="app.showToast('التحويلات تمت توفيرها متاحة ضمن إعدادات النظام','info')" class="ab-quick-btn ab-q-purple"><span><i class="fa fa-code-branch"></i></span>التحويلات تمت توفيرها<i class="fa fa-chevron-left"></i></button>
+
+        <button class="ab-quick-btn ab-q-green" onclick="app.openAddModal()">
+            <span><i class="fa fa-plus"></i></span>إضافة تحويل جديد<i class="fa fa-chevron-left"></i>
+        </button>
+
+        <button onclick="app.renderView(2)" class="ab-quick-btn ab-q-blue">
+            <span><i class="fa fa-list"></i></span>جميع التحويلات<i class="fa fa-chevron-left"></i>
+        </button>
+
+        <button onclick="app.renderView(4)" class="ab-quick-btn ab-q-orange">
+            <span><i class="fa fa-hourglass-half"></i></span>قيد التوفير<i class="fa fa-chevron-left"></i>
+        </button>
+
+        <button onclick="app.renderView(5)" class="ab-quick-btn ab-q-purple">
+            <span><i class="fa fa-box-open"></i></span>تم التوفير<i class="fa fa-chevron-left"></i>
+        </button>
+
+        <button onclick="app.renderView(6)" class="ab-quick-btn ab-q-green">
+            <span><i class="fa fa-circle-check"></i></span>تم التسليم<i class="fa fa-chevron-left"></i>
+        </button>
+
+        <button onclick="app.renderView(8)" class="ab-quick-btn ab-q-blue">
+            <span><i class="fa fa-user-doctor"></i></span>تقرير أداة الصيادلة<i class="fa fa-chevron-left"></i>
+        </button>
 
         <div class="ab-date-card">
             <div class="ab-date-title"><span>التاريخ الحالي</span><i class="fa fa-calendar-days"></i></div>
@@ -1534,6 +1353,12 @@ const app = {
             ) ||
             [],
 
+        branches:
+            JSON.parse(
+                localStorage.getItem('abdeen_branches')
+            ) ||
+            [],
+
         tempStatusRevertInfo: null
 
     },
@@ -1622,6 +1447,14 @@ const app = {
 
     },
 
+
+    getLocalDateKey: () => {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    },
 
     updateDashboardClock: () => {
         const d = new Date();
@@ -1769,11 +1602,12 @@ const app = {
     },
 
     getBranchOptions: () => {
-        return [...new Set(
-            app.state.transfers
-                .flatMap(t => [t.fromBranch, t.toBranch])
-                .map(v => String(v || '').trim())
-                .filter(Boolean)
+        return [...new Set([
+            ...(app.state.branches || []),
+            ...app.state.transfers.flatMap(t => [t.fromBranch, t.toBranch])
+        ]
+            .map(v => String(v || '').trim())
+            .filter(Boolean)
         )].sort((a,b) => a.localeCompare(b, 'ar'));
     },
 
@@ -1914,9 +1748,7 @@ const app = {
             document.getElementById(
                 'form-date'
             ).value =
-                new Date()
-                    .toISOString()
-                    .split('T')[0];
+                app.getLocalDateKey();
 
         }
 
@@ -2470,8 +2302,7 @@ const app = {
             )
             .forEach(btn => {
 
-                btn.className =
-                    "w-full text-right p-3 rounded-xl transition-all flex items-center gap-3 font-bold text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+                btn.className = "ab-side-item";
 
             });
 
@@ -2483,8 +2314,7 @@ const app = {
 
         if (activeButton) {
 
-            activeButton.className =
-                "w-full text-right p-3 rounded-xl transition-all flex items-center gap-3 font-bold text-sm bg-blue-50 text-blue-700";
+            activeButton.className = "ab-side-item ab-active";
 
         }
 
@@ -2684,12 +2514,12 @@ const app = {
                         </div>
                         <div class="ab-shot-stat ab-v2-stat ab-v2-orange">
                             <div class="ico"><i class="fa fa-box-open"></i></div>
-                            <div class="ab-v2-stat-body"><p>تحويلات قيد التوفير</p><h3>${pending.length.toLocaleString('ar-EG')}</h3><small>تحويل</small></div>
+                            <div class="ab-v2-stat-body"><p>قيد التوفير</p><h3>${pending.length.toLocaleString('ar-EG')}</h3><small>تحويل</small></div>
                             <div class="ab-v2-trend">↑ ${pendingValue.toLocaleString('ar-EG')} ج.م</div>
                         </div>
                         <div class="ab-shot-stat ab-v2-stat ab-v2-purple">
                             <div class="ico"><i class="fa fa-circle-check"></i></div>
-                            <div class="ab-v2-stat-body"><p>تحويلات تم تسليمها</p><h3>${delivered.length.toLocaleString('ar-EG')}</h3><small>تحويل</small></div>
+                            <div class="ab-v2-stat-body"><p>تم التسليم</p><h3>${delivered.length.toLocaleString('ar-EG')}</h3><small>تحويل</small></div>
                             <div class="ab-v2-trend">↑ ${deliveredValue.toLocaleString('ar-EG')} ج.م</div>
                         </div>
                         <div class="ab-shot-stat ab-v2-stat ab-v2-red">
@@ -3529,6 +3359,29 @@ const app = {
                     </div>
 
 
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                        <h3 class="font-black text-xl text-slate-800 mb-2 border-b pb-4">
+                            <i class="fa fa-code-branch text-emerald-600 ml-2"></i>
+                            إدارة الفروع
+                        </h3>
+                        <p class="text-sm text-slate-500 font-bold mb-4">
+                            أضف الفروع التي تستخدمها في التحويلات، وستظهر مباشرة في اختيار فرع التحويل.
+                        </p>
+                        <div class="flex gap-2 mb-5">
+                            <input type="text" id="new-branch-name" placeholder="اسم الفرع الجديد..." class="flex-1 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                            <button onclick="app.addBranch()" class="bg-emerald-600 text-white px-6 rounded-xl font-bold hover:bg-emerald-700 transition">إضافة فرع</button>
+                        </div>
+                        <ul class="space-y-2">
+                            ${(app.state.branches || []).map((b, idx) => `
+                                <li class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <span class="font-bold text-slate-700"><i class="fa fa-building text-emerald-600 ml-2"></i>${escapeHtml(b)}</span>
+                                    <button onclick="app.removeBranch(${idx})" class="w-8 h-8 rounded-lg bg-red-100 text-red-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center" title="حذف الفرع"><i class="fa fa-trash"></i></button>
+                                </li>
+                            `).join('') || '<li class="p-5 rounded-xl bg-slate-50 text-center text-slate-400 font-bold">لا توجد فروع مضافة من الإعدادات بعد</li>'}
+                        </ul>
+                    </div>
+
                     <div class="bg-red-50 rounded-2xl border border-red-100 p-6 text-center">
 
                         <h3 class="font-black text-red-700 mb-2">
@@ -3980,6 +3833,41 @@ const app = {
 
     },
 
+
+    /* ===================================================== */
+    /* BRANCH MANAGEMENT */
+    /* ===================================================== */
+
+    addBranch: () => {
+        const input = document.getElementById('new-branch-name');
+        if (!input) return;
+        const name = input.value.trim();
+        if (!name) {
+            app.showToast('اكتب اسم الفرع أولاً', 'error');
+            return;
+        }
+        if ((app.state.branches || []).some(b => String(b).trim() === name)) {
+            app.showToast('هذا الفرع موجود بالفعل', 'error');
+            return;
+        }
+        app.state.branches = [...(app.state.branches || []), name];
+        localStorage.setItem('abdeen_branches', JSON.stringify(app.state.branches));
+        app.refreshBranchOptions();
+        input.value = '';
+        app.showToast('تم إضافة الفرع بنجاح', 'success');
+        app.renderView(10);
+    },
+
+    removeBranch: (idx) => {
+        const name = (app.state.branches || [])[idx];
+        if (!name) return;
+        if (!confirm(`حذف الفرع «${name}» من قائمة الفروع؟\nلن يتم حذف التحويلات القديمة المرتبطة به.`)) return;
+        app.state.branches.splice(idx, 1);
+        localStorage.setItem('abdeen_branches', JSON.stringify(app.state.branches));
+        app.refreshBranchOptions();
+        app.showToast('تم حذف الفرع من القائمة', 'success');
+        app.renderView(10);
+    },
 
     /* ===================================================== */
     /* SEARCH */
