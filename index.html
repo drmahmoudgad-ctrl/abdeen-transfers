@@ -704,6 +704,28 @@ body{min-width:1100px;}
 @media(max-width:850px){#app-layout.ab-shell{display:block!important;overflow:auto!important;}#app-layout .ab-sidebar{position:fixed!important;left:-230px!important;top:0!important;z-index:100!important;width:220px!important;min-width:220px!important;transition:left .25s ease!important;}#app-layout .ab-sidebar.ab-mobile-open{left:0!important;}#app-layout .ab-main{width:100%!important;height:100vh!important;}#app-layout .ab-right-panel{display:none!important;}}
 
 </style>
+
+<style id="abdeen-final-polish">
+:root{--ab-green:#087f5b;--ab-green2:#0a9b6d;--ab-ink:#17343d;--ab-muted:#71858d;--ab-bg:#f4f8f9;--ab-border:#e4ecef;--ab-gold:#e5a62b;}
+*{box-sizing:border-box}.ab-main{background:var(--ab-bg)}
+.ab-sidebar{width:248px;min-width:248px;background:linear-gradient(180deg,#075f49 0%,#064f3e 52%,#043c31 100%);box-shadow:8px 0 28px rgba(4,55,43,.15)}
+.ab-sidebar-brand{height:118px}.ab-sidebar-logo{width:202px;height:104px}
+.ab-sidebar-nav{padding:16px 12px;gap:7px}.ab-side-item{height:49px;border-radius:13px;padding:0 12px;gap:12px;font-size:14px;position:relative}.ab-side-item:hover{background:rgba(255,255,255,.1);transform:none}.ab-side-item.ab-active{background:linear-gradient(135deg,#32bd67,#1c9d59);box-shadow:0 8px 20px rgba(17,132,73,.25)}.ab-side-item.ab-active:before{content:"";position:absolute;right:0;top:10px;bottom:10px;width:4px;border-radius:4px;background:#fff}.ab-side-icon{width:32px;height:32px;min-width:32px;border-radius:10px;background:rgba(255,255,255,.12)}
+.ab-main{min-width:0}.ab-topbar{height:82px;min-height:82px;padding:0 20px;border-bottom:1px solid #e6eef0}.ab-content{padding:22px;scrollbar-width:thin}.ab-content::-webkit-scrollbar{width:8px}.ab-content::-webkit-scrollbar-thumb{background:#cbdadf;border-radius:10px}
+.ab-dashboard-banner,.ab-hero-v5{border-radius:22px!important;box-shadow:0 10px 28px rgba(28,75,80,.07)!important;border-color:#dce9e7!important}.ab-dashboard-banner{min-height:150px}
+.ab-shot-stat,.ab-v2-stat,.ab-v2-panel,.ab-stat{border-radius:18px!important;border-color:var(--ab-border)!important;box-shadow:0 8px 22px rgba(26,72,82,.05)!important;transition:transform .18s,box-shadow .18s}.ab-shot-stat:hover,.ab-v2-stat:hover,.ab-v2-panel:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(26,72,82,.09)!important}
+.ab-right-panel{width:285px;min-width:285px;background:#f8fbfc;border-left:1px solid #e3ecef;padding:0 15px 18px}.ab-quick-title{border-radius:0 0 16px 16px;height:60px;background:linear-gradient(135deg,#087b59,#0aa16f);box-shadow:0 9px 22px rgba(0,113,79,.15)}.ab-quick-btn{height:52px;border-radius:13px;margin-bottom:10px;box-shadow:0 7px 16px rgba(20,65,70,.09)}.ab-date-card,.ab-db-card{border-radius:16px;box-shadow:0 7px 18px rgba(20,65,70,.05)}
+/* Branch reports */
+.ab-content .grid article[class*="rounded-3xl"]{border-radius:20px!important;border-color:#dfeaec!important;box-shadow:0 9px 24px rgba(22,69,78,.06)!important}.ab-content .grid article[class*="rounded-3xl"]:hover{box-shadow:0 14px 30px rgba(22,69,78,.1)!important;transform:translateY(-1px)}
+.ab-content .grid article[class*="rounded-3xl"] h4{color:#17343d}.ab-content .grid article[class*="rounded-3xl"] .bg-emerald-50{background:#edf9f3!important}.ab-content .grid article[class*="rounded-3xl"] .bg-blue-50{background:#edf7ff!important}.ab-content .grid article[class*="rounded-3xl"] .bg-orange-50{background:#fff6e7!important}.ab-content .grid article[class*="rounded-3xl"] .bg-red-50{background:#fff0ef!important}
+.ab-section-title{color:#17343d}.ab-table{border-radius:16px;overflow:hidden}.ab-table th{background:#f2f7f8!important;color:#46616a!important;font-weight:900!important}.ab-table td{border-color:#edf2f4!important}
+button,input,select,textarea{font-family:Tajawal,sans-serif}.modal-enter{border-radius:20px!important}
+@media(max-width:1100px){.ab-sidebar{width:220px;min-width:220px}.ab-right-panel{width:250px;min-width:250px}.ab-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:820px){.ab-shell{display:block!important}.ab-sidebar{position:fixed;right:0;top:0;bottom:0;width:280px;min-width:280px;transform:translateX(110%);transition:transform .22s ease;z-index:100}.ab-sidebar.open{transform:translateX(0)}.ab-main{height:100vh}.ab-topbar{height:72px;min-height:72px}.ab-right-panel{display:none}.ab-content{padding:14px}.ab-search-wrap{display:none}.ab-header-logo{width:125px}.ab-header-logo img{width:120px}.ab-top-user{min-width:0}.ab-user-copy{display:none}.ab-stat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.ab-stat-grid{grid-template-columns:1fr}.ab-topbar{padding:0 10px}.ab-content{padding:10px}.ab-dashboard-banner{height:auto;min-height:170px}.ab-banner-logo{display:none}.ab-side-item{height:50px}}
+@media print{.ab-sidebar,.ab-topbar,.ab-right-panel,.ab-menu-btn,.ab-search-wrap{display:none!important}.ab-main{height:auto!important;background:#fff}.ab-content{overflow:visible!important;padding:0!important}.ab-dashboard-banner,.ab-hero-v5{box-shadow:none!important}.ab-content .grid article[class*="rounded-3xl"]{break-inside:avoid;box-shadow:none!important}}
+</style>
+
 </head>
 
 <body class="h-screen overflow-hidden">
@@ -815,7 +837,7 @@ body{min-width:1100px;}
         <span class="ab-side-icon ab-yellow"><i class="fa fa-user-doctor"></i></span><span>الأطباء</span>
     </button>
     <button id="nav-btn-11" onclick="app.renderView(11)" class="ab-side-item">
-        <span class="ab-side-icon ab-white"><i class="fa fa-code-branch"></i></span><span>الفروع</span>
+        <span class="ab-side-icon ab-white"><i class="fa fa-code-branch"></i></span><span>تقرير الفروع</span>
     </button>
     <button id="nav-btn-9" onclick="app.renderView(9)" class="ab-side-item">
         <span class="ab-side-icon ab-cyan"><i class="fa fa-file-lines"></i></span><span>التقارير</span>
@@ -2616,22 +2638,110 @@ const app = {
         /* ================================================= */
         else if (viewId === 11) {
             const branchSet = new Set();
-            app.state.transfers.forEach(t => {
+            (app.state.transfers || []).forEach(t => {
                 if (t.fromBranch) branchSet.add(String(t.fromBranch).trim());
                 if (t.toBranch) branchSet.add(String(t.toBranch).trim());
             });
-            try {(app.state.branches || []).forEach(b => branchSet.add(String(b).trim()));} catch(e) {}
-            const rows = [...branchSet].filter(Boolean).map(b => {
-                const sent = app.state.transfers.filter(t => String(t.fromBranch||'').trim() === b).length;
-                const received = app.state.transfers.filter(t => String(t.toBranch||'').trim() === b).length;
-                const delivered = app.state.transfers.filter(t => String(t.toBranch||'').trim() === b && t.status === 'تم الاستلام').length;
-                return {b,sent,received,delivered};
-            }).sort((a,b)=>b.received-a.received);
-            html = `<div class="bg-white rounded-2xl border border-slate-200 p-5">
-                <div class="flex items-center justify-between mb-4"><div><h2 class="text-2xl font-black text-slate-800">الفروع</h2><p class="text-sm text-slate-500 font-bold">حركة التحويلات والتسليم حسب الفرع</p></div></div>
-                <div class="overflow-auto"><table class="w-full text-right"><thead class="bg-slate-50"><tr><th class="p-3">الفرع</th><th class="p-3">تحويلات خارجة</th><th class="p-3">تحويلات مستقبلة</th><th class="p-3">تم التسليم</th></tr></thead><tbody>
-                ${rows.map(r=>`<tr class="border-b"><td class="p-3 font-black">${escapeHtml(r.b)}</td><td class="p-3">${r.sent}</td><td class="p-3">${r.received}</td><td class="p-3 text-emerald-600 font-black">${r.delivered}</td></tr>`).join('') || '<tr><td colspan="4" class="p-8 text-center text-slate-400">لا توجد بيانات فروع</td></tr>'}
-                </tbody></table></div>
+            (app.state.branches || []).forEach(b => {
+                if (String(b || '').trim()) branchSet.add(String(b).trim());
+            });
+
+            const branchReports = [...branchSet].filter(Boolean).map(branch => {
+                const incoming = (app.state.transfers || []).filter(t => String(t.toBranch || '').trim() === branch);
+                const outgoing = (app.state.transfers || []).filter(t => String(t.fromBranch || '').trim() === branch);
+                const delivered = incoming.filter(t => t.status === 'تم الاستلام');
+                const cancelled = incoming.filter(t => t.status === 'تم الالغاء');
+                const available = incoming.filter(t => t.status === 'تم التوفير');
+                const pending = incoming.filter(t => t.status === 'قيد التوفير');
+                const value = incoming.reduce((sum,t)=>sum + Number(t.value || 0),0);
+                const latest = [...incoming].sort((a,b)=>String(b.date||b.createdAt||'').localeCompare(String(a.date||a.createdAt||''))).slice(0,5);
+                return {branch,incoming,outgoing,delivered,cancelled,available,pending,value,latest};
+            }).sort((a,b)=>(b.incoming.length+b.outgoing.length)-(a.incoming.length+a.outgoing.length));
+
+            const totalIncoming = branchReports.reduce((n,r)=>n+r.incoming.length,0);
+            const totalDelivered = branchReports.reduce((n,r)=>n+r.delivered.length,0);
+            const totalCancelled = branchReports.reduce((n,r)=>n+r.cancelled.length,0);
+            const totalAvailable = branchReports.reduce((n,r)=>n+r.available.length,0);
+            const totalPending = branchReports.reduce((n,r)=>n+r.pending.length,0);
+
+            const statusPill = (status) => {
+                const map = {
+                    'تم الاستلام':'bg-emerald-50 text-emerald-700',
+                    'تم التوفير':'bg-blue-50 text-blue-700',
+                    'قيد التوفير':'bg-orange-50 text-orange-700',
+                    'تم الالغاء':'bg-red-50 text-red-700'
+                };
+                return `<span class="inline-flex px-2.5 py-1 rounded-full text-[11px] font-black ${map[status] || 'bg-slate-100 text-slate-600'}">${escapeHtml(status || 'غير محدد')}</span>`;
+            };
+
+            html = `
+            <div class="space-y-5">
+                <div class="bg-gradient-to-l from-emerald-800 via-emerald-700 to-teal-500 rounded-3xl p-6 md:p-7 text-white shadow-lg">
+                    <div class="flex flex-wrap items-center justify-between gap-5">
+                        <div>
+                            <div class="text-sm font-bold opacity-80 mb-1"><i class="fa fa-chart-column ml-2"></i>تقرير الفروع</div>
+                            <h2 class="text-2xl md:text-3xl font-black">تقرير مستقل لكل فرع</h2>
+                            <p class="text-sm font-bold opacity-85 mt-2">اختر تقرير الفرع من البطاقات لمراجعة التحويلات وحالاتها بالتفصيل.</p>
+                        </div>
+                        <div class="bg-white/15 border border-white/20 rounded-2xl px-6 py-4 text-center min-w-[150px]">
+                            <div class="text-xs font-bold opacity-80">إجمالي الفروع</div>
+                            <div class="text-3xl font-black">${branchReports.length.toLocaleString('ar-EG')}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm"><div class="text-xs font-bold text-slate-500">التحويلات المستقبلة</div><div class="text-2xl font-black text-slate-800 mt-1">${totalIncoming.toLocaleString('ar-EG')}</div></div>
+                    <div class="bg-white rounded-2xl border border-emerald-100 p-4 shadow-sm"><div class="text-xs font-bold text-emerald-600">تم التسليم</div><div class="text-2xl font-black text-emerald-700 mt-1">${totalDelivered.toLocaleString('ar-EG')}</div></div>
+                    <div class="bg-white rounded-2xl border border-red-100 p-4 shadow-sm"><div class="text-xs font-bold text-red-600">تم الإلغاء</div><div class="text-2xl font-black text-red-700 mt-1">${totalCancelled.toLocaleString('ar-EG')}</div></div>
+                    <div class="bg-white rounded-2xl border border-blue-100 p-4 shadow-sm"><div class="text-xs font-bold text-blue-600">متوفر حالياً</div><div class="text-2xl font-black text-blue-700 mt-1">${totalAvailable.toLocaleString('ar-EG')}</div></div>
+                    <div class="bg-white rounded-2xl border border-orange-100 p-4 shadow-sm"><div class="text-xs font-bold text-orange-600">قيد التوفير</div><div class="text-2xl font-black text-orange-700 mt-1">${totalPending.toLocaleString('ar-EG')}</div></div>
+                </div>
+
+                <div class="flex items-center justify-between gap-3">
+                    <div><h3 class="text-xl font-black text-slate-800"><i class="fa fa-building text-emerald-600 ml-2"></i>تقارير الفروع</h3><p class="text-sm text-slate-500 font-bold mt-1">كل بطاقة بالأسفل تمثل تقريراً مستقلاً لفرع واحد.</p></div>
+                </div>
+
+                ${branchReports.length ? `<div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+                    ${branchReports.map(r => `
+                    <article class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="p-5 bg-gradient-to-l from-slate-50 to-white border-b border-slate-100 flex items-start justify-between gap-4">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl"><i class="fa fa-building"></i></div>
+                                    <div><h4 class="font-black text-lg text-slate-800 truncate">${escapeHtml(r.branch)}</h4><p class="text-xs text-slate-500 font-bold mt-1">تقرير التحويلات الخاص بالفرع</p></div>
+                                </div>
+                            </div>
+                            <div class="text-left"><div class="text-xs text-slate-400 font-bold">إجمالي الاستقبال</div><div class="text-2xl font-black text-slate-800">${r.incoming.length.toLocaleString('ar-EG')}</div></div>
+                        </div>
+
+                        <div class="p-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="rounded-2xl bg-emerald-50 border border-emerald-100 p-3"><div class="text-[11px] font-bold text-emerald-600">تم التسليم</div><div class="text-xl font-black text-emerald-700 mt-1">${r.delivered.length.toLocaleString('ar-EG')}</div></div>
+                            <div class="rounded-2xl bg-blue-50 border border-blue-100 p-3"><div class="text-[11px] font-bold text-blue-600">تم التوفير</div><div class="text-xl font-black text-blue-700 mt-1">${r.available.length.toLocaleString('ar-EG')}</div></div>
+                            <div class="rounded-2xl bg-orange-50 border border-orange-100 p-3"><div class="text-[11px] font-bold text-orange-600">قيد التوفير</div><div class="text-xl font-black text-orange-700 mt-1">${r.pending.length.toLocaleString('ar-EG')}</div></div>
+                            <div class="rounded-2xl bg-red-50 border border-red-100 p-3"><div class="text-[11px] font-bold text-red-600">تم الإلغاء</div><div class="text-xl font-black text-red-700 mt-1">${r.cancelled.length.toLocaleString('ar-EG')}</div></div>
+                        </div>
+
+                        <div class="px-5 pb-5 grid grid-cols-2 gap-3">
+                            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-[11px] font-bold text-slate-500">تحويلات خارجة</div><div class="text-xl font-black text-slate-700 mt-1">${r.outgoing.length.toLocaleString('ar-EG')}</div></div>
+                            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-[11px] font-bold text-slate-500">قيمة التحويلات المستقبلة</div><div class="text-xl font-black text-slate-700 mt-1">${r.value.toLocaleString('ar-EG')} <small class="text-xs">ج.م</small></div></div>
+                        </div>
+
+                        <details class="border-t border-slate-100 group">
+                            <summary class="cursor-pointer list-none p-4 flex items-center justify-between hover:bg-slate-50 transition">
+                                <span class="font-black text-slate-700"><i class="fa fa-list-check text-emerald-600 ml-2"></i>آخر التحويلات في الفرع (${Math.min(r.latest.length,5).toLocaleString('ar-EG')})</span>
+                                <i class="fa fa-chevron-down text-slate-400 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <div class="px-4 pb-4 space-y-2">
+                                ${r.latest.length ? r.latest.map(t => `
+                                    <div class="rounded-xl bg-slate-50 border border-slate-100 p-3 flex items-center justify-between gap-3">
+                                        <div class="min-w-0"><div class="font-bold text-sm text-slate-700 truncate">${escapeHtml(t.patientName || t.patient || 'تحويل بدون اسم')}</div><div class="text-[11px] text-slate-400 mt-1">${escapeHtml(t.date || '')} ${t.doctorName ? '• '+escapeHtml(t.doctorName) : ''}</div></div>
+                                        <div class="text-left shrink-0">${statusPill(t.status)}<div class="text-[11px] font-bold text-slate-500 mt-1">${Number(t.value||0).toLocaleString('ar-EG')} ج.م</div></div>
+                                    </div>`).join('') : '<div class="text-center text-slate-400 font-bold py-5">لا توجد تحويلات لهذا الفرع</div>'}
+                            </div>
+                        </details>
+                    </article>`).join('')}
+                </div>` : `<div class="bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center"><div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto text-2xl mb-4"><i class="fa fa-building"></i></div><h3 class="font-black text-lg text-slate-700">لا توجد فروع بعد</h3><p class="text-sm text-slate-400 font-bold mt-2">أضف الفروع من الإعدادات لتظهر تقاريرها هنا.</p></div>`}
             </div>`;
         }
 
